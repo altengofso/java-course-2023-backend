@@ -1,17 +1,20 @@
 package edu.java.bot.command;
 
-import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.service.LinkService;
+import edu.java.bot.models.user.User;
+import edu.java.bot.models.user.UserState;
+import edu.java.bot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-@Component("/untrack")
+@Component("untrack")
 @RequiredArgsConstructor
 public class UntrackCommand implements Command {
     private static final String COMMAND = "/untrack";
     private static final String DESCRIPTION = "удалить ссылку из отслеживания";
-    private final LinkService linkService;
+    private static final String NO_LINKS = "нет отслеживаемых ссылок";
+
+    private final UserRepository userRepository;
 
     @Override
     public String command() {
@@ -24,8 +27,12 @@ public class UntrackCommand implements Command {
     }
 
     @Override
-    public SendMessage handle(Update update) {
-        String result = linkService.untrackLink(update);
-        return new SendMessage(update.message().chat().id(), result);
+    public synchronized SendMessage handle(long id) {
+        User user = userRepository.findById(id);
+        if (user.getLinks().isEmpty()) {
+            return new SendMessage(id, NO_LINKS);
+        }
+        user.setUserState(UserState.AWAITING_UNTRACK_LINK);
+        return new SendMessage(id, user.getLinksList());
     }
 }

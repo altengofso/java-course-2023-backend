@@ -1,5 +1,5 @@
 import edu.java.bot.BotApplication;
-import edu.java.bot.processor.URIProcessor;
+import edu.java.bot.utils.UriValidator;
 import java.net.URI;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,9 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = {BotApplication.class})
-public class URIProcessorTest {
+public class UriValidatorTest {
     @Autowired
-    private URIProcessor uriProcessor;
+    private UriValidator uriValidator;
 
     private static Stream<Arguments> validLinks() {
         return Stream.of(
@@ -33,14 +33,14 @@ public class URIProcessorTest {
     @ParameterizedTest
     @MethodSource("validLinks")
     void testValidLinksValidationsReturnTrue(URI uri) {
-        var actual = uriProcessor.isValidURI(uri);
+        var actual = uriValidator.isValidUri(uri);
         assertThat(actual).isTrue();
     }
 
     @ParameterizedTest
     @MethodSource("invalidLinks")
     void testInvalidLinksValidationsReturnFalse(URI uri) {
-        var actual = uriProcessor.isValidURI(uri);
+        var actual = uriValidator.isValidUri(uri);
         assertThat(actual).isFalse();
     }
 }

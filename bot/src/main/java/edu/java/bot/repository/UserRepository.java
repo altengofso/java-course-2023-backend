@@ -1,5 +1,6 @@
 package edu.java.bot.repository;
 
+import edu.java.bot.models.user.User;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.stereotype.Repository;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Repository;
 public class UserRepository {
     private final Map<Long, User> database = new HashMap<>();
 
-    public User findById(Long id) {
+    public User findById(long id) {
         return database.get(id);
     }
 

@@ -28,10 +28,7 @@ public class BotController implements UpdatesListener {
         if (!list.isEmpty()) {
             list.forEach(update -> {
                 if (update.message() != null) {
-                    try {
-                        telegramBot.execute(botService.getSendMessage(update));
-                    } catch (NullPointerException ignored) {
-                    }
+                    telegramBot.execute(botService.getSendMessage(update));
                 }
             });
         }

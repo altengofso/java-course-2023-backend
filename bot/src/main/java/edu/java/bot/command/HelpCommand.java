@@ -1,13 +1,12 @@
 package edu.java.bot.command;
 
-import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-@Component("/help")
+@Component("help")
 @RequiredArgsConstructor
 public class HelpCommand implements Command {
     private static final String COMMAND = "/help";
@@ -25,9 +24,9 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public SendMessage handle(Update update) {
+    public SendMessage handle(long id) {
         return new SendMessage(
-            update.message().chat().id(),
+            id,
             commands
                 .values()
                 .stream()

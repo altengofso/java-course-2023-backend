@@ -1,19 +1,19 @@
 package edu.java.bot.command;
 
-import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.service.LinkService;
+import edu.java.bot.models.user.User;
+import edu.java.bot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-@Component("/list")
+@Component("list")
 @RequiredArgsConstructor
 public class ListCommand implements Command {
     private static final String COMMAND = "/list";
     private static final String DESCRIPTION = "показать список отслеживаемых ссылок";
+    private static final String NO_LINKS = "нет отслеживаемых ссылок";
 
-    private final LinkService linkService;
+    private final UserRepository userRepository;
 
     @Override
     public String command() {
@@ -26,8 +26,11 @@ public class ListCommand implements Command {
     }
 
     @Override
-    public SendMessage handle(Update update) {
-        String result = linkService.getAllLinks(update);
-        return new SendMessage(update.message().chat().id(), result).parseMode(ParseMode.HTML);
+    public SendMessage handle(long id) {
+        User user = userRepository.findById(id);
+        if (user.getLinks().isEmpty()) {
+            return new SendMessage(id, NO_LINKS);
+        }
+        return new SendMessage(id, user.getLinksList());
     }
 }
