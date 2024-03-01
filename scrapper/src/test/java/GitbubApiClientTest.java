@@ -30,7 +30,7 @@ public class GitbubApiClientTest {
         String link = "https://github.com/sanyarnd/java-course-2023-backend-template";
         boolean expected = true;
         GithubApiClient client = new GithubApiClient(null);
-        boolean actual = client.canRespond(link);
+        boolean actual = client.canAccess(link);
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -39,7 +39,7 @@ public class GitbubApiClientTest {
         String link = "https://yandex.ru";
         boolean expected = false;
         GithubApiClient client = new GithubApiClient("");
-        boolean actual = client.canRespond(link);
+        boolean actual = client.canAccess(link);
         assertThat(actual).isEqualTo(expected);
     }
 }

@@ -13,7 +13,7 @@ public class ClientService {
     public ApiClient getApiClient(String link) {
         return apiClients
             .stream()
-            .filter(apiClient -> apiClient.canRespond(link))
+            .filter(apiClient -> apiClient.canAccess(link))
             .findFirst()
             .orElse(null);
     }

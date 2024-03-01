@@ -32,7 +32,7 @@ public class StackoverflowApiClientTest {
         String link = "https://stackoverflow.com/questions/78056447?site=stackoverflow";
         boolean expected = true;
         StackoverflowApiClient client = new StackoverflowApiClient(null);
-        boolean actual = client.canRespond(link);
+        boolean actual = client.canAccess(link);
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -41,7 +41,7 @@ public class StackoverflowApiClientTest {
         String link = "https://yandex.ru";
         boolean expected = false;
         StackoverflowApiClient client = new StackoverflowApiClient("");
-        boolean actual = client.canRespond(link);
+        boolean actual = client.canAccess(link);
         assertThat(actual).isEqualTo(expected);
     }
 }

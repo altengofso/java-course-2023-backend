@@ -18,7 +18,7 @@ public abstract class AbstractApiClient implements ApiClient {
     }
 
     @Override
-    public boolean canRespond(String link) {
+    public boolean canAccess(String link) {
         return link.startsWith(urlPrefix);
     }
 }
