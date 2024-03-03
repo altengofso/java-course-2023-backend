@@ -1,8 +1,8 @@
 import edu.java.scrapper.ScrapperApplication;
-import edu.java.scrapper.client.ApiClient;
-import edu.java.scrapper.client.GithubApiClient;
-import edu.java.scrapper.client.StackoverflowApiClient;
-import edu.java.scrapper.service.ClientService;
+import edu.java.scrapper.app.client.ApiClient;
+import edu.java.scrapper.app.client.GithubApiClient;
+import edu.java.scrapper.app.client.StackoverflowApiClient;
+import edu.java.scrapper.app.service.ClientService;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

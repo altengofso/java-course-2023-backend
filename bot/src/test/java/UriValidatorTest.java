@@ -1,5 +1,5 @@
 import edu.java.bot.BotApplication;
-import edu.java.bot.utils.UriValidator;
+import edu.java.bot.app.utils.UriValidator;
 import java.net.URI;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;

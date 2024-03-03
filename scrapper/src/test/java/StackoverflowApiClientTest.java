@@ -1,7 +1,7 @@
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import edu.java.scrapper.client.StackoverflowApiClient;
-import edu.java.scrapper.client.dto.ClientResponse;
+import edu.java.scrapper.app.client.StackoverflowApiClient;
+import edu.java.scrapper.app.client.dto.ClientResponse;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
