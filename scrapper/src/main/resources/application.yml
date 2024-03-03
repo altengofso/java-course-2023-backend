@@ -7,10 +7,16 @@ app:
   client-base-url:
     github-url: https://api.github.com
     stackoverflow-url: https://api.stackexchange.com
+    bot-url: http://localhost:8090
 
 spring:
   application:
     name: scrapper
+
+springdoc:
+  swagger-ui:
+    path: "/swagger-ui"
+  override-with-generic-response: false
 
 server:
   port: 8080

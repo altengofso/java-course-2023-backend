@@ -10,6 +10,10 @@ public class GithubApiClient extends AbstractApiClient {
     private static final Pattern EXTRACT_PATTERN = Pattern.compile("https?://.*/(.+)/(.+).*");
     private static final String URL_PREFIX = "https://github.com";
 
+    public GithubApiClient() {
+        super(DEFAULT_URL, URL_PREFIX);
+    }
+
     public GithubApiClient(String baseUrl) {
         super(baseUrl, DEFAULT_URL, URL_PREFIX);
     }

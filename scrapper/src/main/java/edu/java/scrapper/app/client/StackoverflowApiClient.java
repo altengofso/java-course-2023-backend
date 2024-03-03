@@ -10,6 +10,10 @@ public class StackoverflowApiClient extends AbstractApiClient {
     private static final Pattern EXTRACT_PATTERN = Pattern.compile("https?://.*/questions/(\\d+).*");
     private static final String URL_PREFIX = "https://stackoverflow.com";
 
+    public StackoverflowApiClient() {
+        super(DEFAULT_URL, URL_PREFIX);
+    }
+
     public StackoverflowApiClient(String baseUrl) {
         super(baseUrl, DEFAULT_URL, URL_PREFIX);
     }
