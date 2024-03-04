@@ -40,6 +40,14 @@ public interface LinksApi {
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ApiErrorResponse.class)
             )
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Чат не существует",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = ApiErrorResponse.class)
+            )
         )
     })
     @GetMapping("/links")
@@ -58,6 +66,14 @@ public interface LinksApi {
         @ApiResponse(
             responseCode = "400",
             description = "Некорректные параметры запроса",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = ApiErrorResponse.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Чат не существует",
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ApiErrorResponse.class)
@@ -98,7 +114,7 @@ public interface LinksApi {
         ),
         @ApiResponse(
             responseCode = "404",
-            description = "Ссылка не найдена",
+            description = "Объект не найден",
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ApiErrorResponse.class)

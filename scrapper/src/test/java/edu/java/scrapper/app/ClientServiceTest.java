@@ -1,3 +1,5 @@
+package edu.java.scrapper.app;
+
 import edu.java.scrapper.ScrapperApplication;
 import edu.java.scrapper.app.client.ApiClient;
 import edu.java.scrapper.app.client.GithubApiClient;

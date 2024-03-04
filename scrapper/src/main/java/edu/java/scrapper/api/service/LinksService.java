@@ -3,21 +3,20 @@ package edu.java.scrapper.api.service;
 import edu.java.scrapper.api.models.LinkResponse;
 import edu.java.scrapper.api.models.ListLinksResponse;
 import java.net.URI;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class LinksService {
     public ListLinksResponse getAllLinks(long chatId) {
-        throw new NotImplementedException("Получение списка не реализовано");
+        return null;
     }
 
     public LinkResponse addLink(long chatId, URI link) {
-        throw new NotImplementedException("Добавление не реализовано");
+        return null;
     }
 
     public LinkResponse deleteLink(long chatId, URI link) {
-        throw new NotImplementedException("Удаление не реализовано");
+        return null;
     }
 
     public boolean findById(long chatId, URI link) {
