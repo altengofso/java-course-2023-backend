@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TgChatControllerTest {
     @Autowired
     private MockMvc mvc;
-    @MockBean
+    @SpyBean
     private TgChatService tgChatService;
 
     private static final long CHAT_ID = 1L;
@@ -25,7 +25,7 @@ public class TgChatControllerTest {
     @Test
     @SneakyThrows
     void testRegisterChatShouldReturnOKWhenNotRegisteredYet() {
-        Mockito.doReturn(false).when(tgChatService).findById(CHAT_ID);
+        Mockito.doReturn(false).when(tgChatService).verifyChatExistence(CHAT_ID);
 
         mvc.perform(post("/tg-chat/" + CHAT_ID)).andExpect(status().isOk());
     }
@@ -33,7 +33,7 @@ public class TgChatControllerTest {
     @Test
     @SneakyThrows
     void testRegisterChatShouldReturnConflictWhenAlreadyRegistered() {
-        Mockito.doReturn(true).when(tgChatService).findById(CHAT_ID);
+        Mockito.doReturn(true).when(tgChatService).verifyChatExistence(CHAT_ID);
 
         mvc.perform(post("/tg-chat/" + CHAT_ID)).andExpect(status().isConflict());
     }
@@ -41,7 +41,7 @@ public class TgChatControllerTest {
     @Test
     @SneakyThrows
     void testDeleteChatShouldReturnOKWhenRegisteredChatGiven() {
-        Mockito.doReturn(true).when(tgChatService).findById(CHAT_ID);
+        Mockito.doReturn(true).when(tgChatService).verifyChatExistence(CHAT_ID);
 
         mvc.perform(delete("/tg-chat/" + CHAT_ID)).andExpect(status().isOk());
     }
@@ -49,7 +49,7 @@ public class TgChatControllerTest {
     @Test
     @SneakyThrows
     void testDeleteChatShouldReturnNotFoundWhenNotRegisteredChatGiven() {
-        Mockito.doReturn(false).when(tgChatService).findById(CHAT_ID);
+        Mockito.doReturn(false).when(tgChatService).verifyChatExistence(CHAT_ID);
 
         mvc.perform(delete("/tg-chat/" + CHAT_ID)).andExpect(status().isNotFound());
     }

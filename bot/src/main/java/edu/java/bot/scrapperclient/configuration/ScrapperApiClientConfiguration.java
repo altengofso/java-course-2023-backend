@@ -9,6 +9,10 @@ import org.springframework.context.annotation.Configuration;
 public class ScrapperApiClientConfiguration {
     @Bean
     public ScrapperApiClient getScrapperApiClient(ApplicationConfig applicationConfig) {
+        if (applicationConfig.clientBaseUrl().scrapperUrl().isEmpty()) {
+            throw new IllegalArgumentException(
+                "app.client-base-url.scrapper-url needs to be defined in application.yml file");
+        }
         return new ScrapperApiClient(applicationConfig.clientBaseUrl().scrapperUrl());
     }
 }
