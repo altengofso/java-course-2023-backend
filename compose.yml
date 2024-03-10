@@ -1,5 +1,6 @@
+version: '3'
 services:
-  postgresql:
+  db:
     image: postgres:16
     ports:
       - "5432:5432"
@@ -8,12 +9,23 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - postgresql:/var/lib/postgresql/data
-    networks:
-      - backend
+      - db_volume:/var/lib/postgresql/data
+
+  liquibase-migrations:
+    image: liquibase/liquibase:4.25
+    container_name: liquibase
+    depends_on:
+      - db
+    command:
+      - --changelog-file=master.xml
+      - --search-path=/liquibase/changelog/
+      - --driver=org.postgresql.Driver
+      - --url=jdbc:postgresql://db:5432/scrapper
+      - --username=postgres
+      - --password=postgres
+      - update
+    volumes:
+      - ./scrapper/src/main/resources/migrations/:/liquibase/changelog/
 
 volumes:
-  postgresql: { }
-
-networks:
-  backend: { }
+  db_volume:
