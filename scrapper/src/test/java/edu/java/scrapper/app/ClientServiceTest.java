@@ -1,3 +1,5 @@
+package edu.java.scrapper.app;
+
 import edu.java.scrapper.ScrapperApplication;
 import edu.java.scrapper.app.client.ApiClient;
 import edu.java.scrapper.app.client.GithubApiClient;
@@ -20,11 +22,11 @@ public class ClientServiceTest {
         return Stream.of(
             Arguments.of(
                 "https://github.com/sanyarnd/java-course-2023-backend-template",
-                new GithubApiClient(null)
+                new GithubApiClient()
             ),
             Arguments.of(
                 "https://stackoverflow.com/questions/78056447?site=stackoverflow",
-                new StackoverflowApiClient(null)
+                new StackoverflowApiClient()
             )
         );
     }

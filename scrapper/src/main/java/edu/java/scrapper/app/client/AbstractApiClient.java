@@ -1,6 +1,5 @@
 package edu.java.scrapper.app.client;
 
-import java.util.Objects;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public abstract class AbstractApiClient implements ApiClient {
@@ -8,12 +7,21 @@ public abstract class AbstractApiClient implements ApiClient {
     protected String urlPrefix;
     protected final WebClient webClient;
 
+    public AbstractApiClient(String defaultUrl, String urlPrefix) {
+        this.defaultUrl = defaultUrl;
+        this.urlPrefix = urlPrefix;
+        webClient = WebClient
+            .builder()
+            .baseUrl(defaultUrl)
+            .build();
+    }
+
     public AbstractApiClient(String baseUrl, String defaultUrl, String urlPrefix) {
         this.defaultUrl = defaultUrl;
         this.urlPrefix = urlPrefix;
         webClient = WebClient
             .builder()
-            .baseUrl(Objects.requireNonNullElse(baseUrl, defaultUrl))
+            .baseUrl(baseUrl)
             .build();
     }
 

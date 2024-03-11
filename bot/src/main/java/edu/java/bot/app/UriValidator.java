@@ -1,4 +1,4 @@
-package edu.java.bot.app.utils;
+package edu.java.bot.app;
 
 import edu.java.bot.app.models.uri.ValidUri;
 import java.net.URI;

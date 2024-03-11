@@ -1,8 +1,8 @@
 package edu.java.bot.app.service;
 
+import edu.java.bot.app.UriValidator;
 import edu.java.bot.app.models.user.User;
 import edu.java.bot.app.models.user.UserState;
-import edu.java.bot.app.utils.UriValidator;
 import java.net.URI;
 import java.net.URISyntaxException;
 import lombok.RequiredArgsConstructor;
