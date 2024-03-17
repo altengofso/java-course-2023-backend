@@ -12,6 +12,11 @@ app:
 spring:
   application:
     name: scrapper
+  datasource:
+    driver: org.postgresql.Driver
+    url: jdbc:postgresql://postgresql:5432/scrapper
+    username: postgres
+    password: postgres
 
 springdoc:
   swagger-ui:

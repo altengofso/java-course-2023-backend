@@ -12,7 +12,7 @@ create table if not exists chat
     created_at      timestamp with time zone not null default now()
 );
 
-create table if not exists chat_link
+create table if not exists subscription
 (
     link_id         bigint references link ON DELETE CASCADE,
     chat_id         bigint references chat ON DELETE CASCADE,
