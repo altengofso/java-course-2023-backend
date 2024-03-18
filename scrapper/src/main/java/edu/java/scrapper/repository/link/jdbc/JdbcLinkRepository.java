@@ -20,17 +20,18 @@ public class JdbcLinkRepository implements LinkRepository {
     @Transactional
     public LinkDto add(URI url) {
         return jdbcClient.sql("insert into link (url) values (?) on conflict do nothing returning *")
-            .param(url)
+            .param(url.toString())
             .query(LinkDto.class)
             .single();
     }
 
     @Override
     @Transactional
-    public void remove(long linkId) {
-        jdbcClient.sql("delete from link where id = ?")
+    public LinkDto remove(long linkId) {
+        return jdbcClient.sql("delete from link where id = ? returning *")
             .param(linkId)
-            .update();
+            .query(LinkDto.class)
+            .single();
     }
 
     @Override
@@ -46,8 +47,8 @@ public class JdbcLinkRepository implements LinkRepository {
     public List<LinkDto> findAllByChatId(long chatId) {
         return jdbcClient.sql("""
                 select * from link
-                join chat on link.id = chat.id
-                where chat.id = ?""")
+                join subscription on link.id = subscription.link_id
+                where subscription.chat_id = ?""")
             .param(chatId)
             .query(LinkDto.class)
             .list();
@@ -57,7 +58,7 @@ public class JdbcLinkRepository implements LinkRepository {
     @Transactional
     public Optional<LinkDto> findByUrl(URI url) {
         return jdbcClient.sql("select * from link where url = ?")
-            .param(url)
+            .param(url.toString())
             .query(LinkDto.class)
             .optional();
     }

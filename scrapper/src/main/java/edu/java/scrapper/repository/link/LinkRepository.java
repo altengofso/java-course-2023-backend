@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface LinkRepository {
     LinkDto add(URI url);
 
-    void remove(long linkId);
+    LinkDto remove(long linkId);
 
     List<LinkDto> findAll();
 
