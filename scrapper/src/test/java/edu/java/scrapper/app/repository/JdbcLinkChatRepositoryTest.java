@@ -1,17 +1,16 @@
 package edu.java.scrapper.app.repository;
 
 import edu.java.scrapper.IntegrationEnvironment;
-import edu.java.scrapper.app.repository.chat.JdbcChatRepository;
-import edu.java.scrapper.app.repository.dto.ChatDto;
-import org.assertj.core.data.Offset;
+import edu.java.scrapper.repository.chat.jdbc.JdbcChatRepository;
+import edu.java.scrapper.repository.dto.ChatDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
-import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -23,11 +22,38 @@ public class JdbcLinkChatRepositoryTest extends IntegrationEnvironment {
     @Transactional
     @Rollback
     void addTest() {
-        long chatId = 1L;
         jdbcChatRepository.add(1L);
-        ChatDto chatDto = jdbcChatRepository.findById(chatId).orElseThrow();
-        assertThat(chatDto.id()).isEqualTo(chatId);
-        OffsetDateTime now = OffsetDateTime.now();
-        assertThat(chatDto.createdAt().toLocalDateTime()).isEqualTo(now.toLocalDateTime());
+        assertThat(jdbcChatRepository.findById(1L)).isPresent();
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void removeTest() {
+        jdbcChatRepository.add(1L);
+        ChatDto expected = jdbcChatRepository.findById(1L).orElseThrow();
+        ChatDto actual = jdbcChatRepository.remove(1L);
+        assertThat(actual).isEqualTo(expected);
+        assertThat(jdbcChatRepository.findById(1L)).isEmpty();
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void findAllTest() {
+        ChatDto first = jdbcChatRepository.add(1L);
+        ChatDto second = jdbcChatRepository.add(2L);
+        List<ChatDto> expected = List.of(first, second);
+        List<ChatDto> actual = jdbcChatRepository.findAll();
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void findByIdTest() {
+        ChatDto expected = jdbcChatRepository.add(1L);
+        ChatDto actual = jdbcChatRepository.findById(1L).orElseThrow();
+        assertThat(actual).isEqualTo(expected);
     }
 }

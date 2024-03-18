@@ -2,8 +2,8 @@ package edu.java.scrapper.app;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import edu.java.scrapper.app.client.GithubApiClient;
-import edu.java.scrapper.app.client.dto.ClientResponse;
+import edu.java.scrapper.client.apiclient.GithubApiClient;
+import edu.java.scrapper.client.dto.ClientResponse;
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;

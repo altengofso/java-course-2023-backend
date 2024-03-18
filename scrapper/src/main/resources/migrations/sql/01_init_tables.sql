@@ -2,8 +2,8 @@ create table if not exists link
 (
     id              bigserial primary key,
     url             text unique not null,
-    last_check_at   timestamp with time zone not null default now(),
-    updated_at      timestamp with time zone not null
+    last_check_at   timestamp with time zone,
+    updated_at      timestamp with time zone
 );
 
 create table if not exists chat
