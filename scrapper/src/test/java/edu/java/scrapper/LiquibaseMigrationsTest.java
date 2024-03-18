@@ -34,7 +34,7 @@ public class LiquibaseMigrationsTest extends IntegrationEnvironment {
     @SneakyThrows
     void liquibaseMigrationsShouldCreateCorrectChatLinkTable() {
         Connection connection = POSTGRES.createConnection("");
-        PreparedStatement preparedStatement = connection.prepareStatement("select * from chat_link;");
+        PreparedStatement preparedStatement = connection.prepareStatement("select * from subscription;");
         ResultSet resultSet = preparedStatement.executeQuery();
         assertThat(resultSet.findColumn("link_id")).isEqualTo(1);
         assertThat(resultSet.findColumn("chat_id")).isEqualTo(2);

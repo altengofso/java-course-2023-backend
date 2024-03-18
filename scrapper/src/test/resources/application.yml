@@ -20,13 +20,5 @@ spring:
   liquibase:
     enabled: false
 
-springdoc:
-  swagger-ui:
-    path: "/swagger-ui"
-  override-with-generic-response: false
-
-server:
-  port: 8080
-
 logging:
   config: classpath:log4j2-plain.xml
