@@ -1,5 +1,6 @@
 package edu.java.scrapper.service.jdbc;
 
+import edu.java.scrapper.controller.dto.ChatResponse;
 import edu.java.scrapper.controller.exceptions.ConflictException;
 import edu.java.scrapper.controller.exceptions.ExceptionMessage;
 import edu.java.scrapper.controller.exceptions.NotFoundException;
@@ -14,19 +15,30 @@ public class JdbcTgChatService implements TgChatService {
     private final JdbcChatRepository chatRepository;
 
     @Override
-    public void registerChat(long chatId) {
-        if (verifyChatExistence(chatId)) {
-            throw new ConflictException(ExceptionMessage.TGCHAT_CONFLICT_MESSAGE.formatted(chatId));
+    public ChatResponse getChat(long chatId) {
+        var chat = chatRepository.findById(chatId);
+        if (chat.isEmpty()) {
+            throw new NotFoundException(ExceptionMessage.TGCHAT_NOTFOUND_MESSAGE);
         }
-        chatRepository.add(chatId);
+        return chat.map(chatDto -> new ChatResponse(chatDto.id(), chatDto.createdAt())).orElseThrow();
     }
 
     @Override
-    public void deleteChat(long chatId) {
+    public ChatResponse registerChat(long chatId) {
+        if (verifyChatExistence(chatId)) {
+            throw new ConflictException(ExceptionMessage.TGCHAT_CONFLICT_MESSAGE.formatted(chatId));
+        }
+        var chat = chatRepository.add(chatId);
+        return new ChatResponse(chat.id(), chat.createdAt());
+    }
+
+    @Override
+    public ChatResponse deleteChat(long chatId) {
         if (!verifyChatExistence(chatId)) {
             throw new NotFoundException(ExceptionMessage.TGCHAT_NOTFOUND_MESSAGE);
         }
-        chatRepository.remove(chatId);
+        var chat = chatRepository.remove(chatId);
+        return new ChatResponse(chat.id(), chat.createdAt());
     }
 
     @Override

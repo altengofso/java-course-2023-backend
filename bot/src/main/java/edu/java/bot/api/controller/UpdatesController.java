@@ -41,7 +41,7 @@ public class UpdatesController {
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<String> sendUpdates(@RequestBody LinkUpdate linkUpdate) {
+    public ResponseEntity<Void> sendUpdates(@RequestBody LinkUpdate linkUpdate) {
         log.info("Sending update {}", linkUpdate);
         updatesService.sendUpdates(linkUpdate);
         return ResponseEntity.ok().build();

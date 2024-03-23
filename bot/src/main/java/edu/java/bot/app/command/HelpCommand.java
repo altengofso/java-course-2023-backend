@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 public class HelpCommand implements Command {
     private static final String COMMAND = "/help";
     private static final String DESCRIPTION = "доступные команды";
+
     private final Map<String, Command> commands;
 
     @Override

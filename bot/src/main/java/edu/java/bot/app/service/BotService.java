@@ -5,7 +5,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.app.command.Command;
 import edu.java.bot.app.command.NonSlashCommand;
 import edu.java.bot.app.command.UnregisteredCommand;
-import edu.java.bot.app.repository.UserRepository;
+import edu.java.bot.scrapperclient.ScrapperApiClient;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,12 +16,12 @@ public class BotService {
     private final Map<String, Command> commands;
     private final NonSlashCommand nonSlashCommand;
     private final UnregisteredCommand unregisteredCommand;
-    private final UserRepository userRepository;
+    private final ScrapperApiClient scrapperApiClient;
 
     public SendMessage getSendMessage(Update update) {
         long id = update.message().chat().id();
         String message = update.message().text();
-        if (userRepository.findById(id) == null && !message.equals("/start")) {
+        if (scrapperApiClient.getChat(id) == null && !message.equals("/start")) {
             return handleUnregisteredCommand(id);
         }
         if (message.startsWith("/")) {

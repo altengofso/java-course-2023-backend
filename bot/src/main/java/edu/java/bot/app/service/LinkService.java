@@ -3,6 +3,10 @@ package edu.java.bot.app.service;
 import edu.java.bot.app.UriValidator;
 import edu.java.bot.app.models.user.User;
 import edu.java.bot.app.models.user.UserState;
+import edu.java.bot.scrapperclient.ScrapperApiClient;
+import edu.java.bot.scrapperclient.models.AddLinkRequest;
+import edu.java.bot.scrapperclient.models.LinkResponse;
+import edu.java.bot.scrapperclient.models.RemoveLinkRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +28,7 @@ public class LinkService {
     private static final String MULTIPLE_ATTEMPT_ERROR =
         "ошибка многократной отправки ссылки для изменения отслеживания";
     private final UriValidator uriValidator;
+    private final ScrapperApiClient scrapperApiClient;
 
     public synchronized String trackLink(User user, String link) {
         if (!user.getUserState().equals(UserState.AWAITING_TRACK_LINK)) {
@@ -34,7 +39,7 @@ public class LinkService {
         try {
             URI uri = new URI(link);
             if (uriValidator.isValidUri(uri)) {
-                user.getLinks().add(uri);
+                scrapperApiClient.addLink(user.getId(), new AddLinkRequest(uri));
                 return SUCCESS_TRACK;
             }
             log.error(TRACK_LOG_ERROR.formatted(link, user.getId()));
@@ -53,8 +58,12 @@ public class LinkService {
         user.setUserState(UserState.REGULAR);
         try {
             URI uri = new URI(link);
-            if (user.getLinks().contains(uri)) {
-                user.getLinks().remove(uri);
+            if (scrapperApiClient.getAllLinks(user.getId())
+                .links()
+                .stream()
+                .map(LinkResponse::url)
+                .toList().contains(uri)) {
+                scrapperApiClient.deleteLink(user.getId(), new RemoveLinkRequest(uri));
                 return SUCCESS_UNTRACK;
             }
             log.error(UNTRACK_LOG_ERROR.formatted(link, user.getId()));
