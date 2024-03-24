@@ -9,7 +9,7 @@ app:
     stackoverflow-url: https://api.stackexchange.com
     bot-url: http://localhost:8090
 
-  database-access-type: jdbc
+  database-access-type: jpa
 
 spring:
   application:
