@@ -2,7 +2,7 @@ package edu.java.scrapper.controller;
 
 import edu.java.scrapper.controller.dto.ApiErrorResponse;
 import edu.java.scrapper.controller.dto.ChatResponse;
-import edu.java.scrapper.service.jdbc.JdbcTgChatService;
+import edu.java.scrapper.service.TgChatService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Validated
 public class TgChatController {
-    private final JdbcTgChatService tgChatService;
+    private final TgChatService tgChatService;
 
     @Operation(summary = "Получить чат")
     @ApiResponses(value = {

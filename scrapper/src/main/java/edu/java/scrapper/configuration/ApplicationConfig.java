@@ -10,11 +10,16 @@ import org.springframework.validation.annotation.Validated;
 public record ApplicationConfig(
     @NotNull
     Scheduler scheduler,
-    ClientBaseUrl clientBaseUrl
+    ClientBaseUrl clientBaseUrl,
+    AccessType databaseAccessType
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration checkDelay) {
     }
 
     public record ClientBaseUrl(String githubUrl, String stackoverflowUrl, String botUrl) {
+    }
+
+    public enum AccessType {
+        JDBC, JPA
     }
 }

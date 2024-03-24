@@ -23,4 +23,8 @@ public class LinkDto {
     private URI url;
     private OffsetDateTime lastCheckAt;
     private OffsetDateTime updatedAt;
+
+    public LinkDto(URI url) {
+        this.url = url;
+    }
 }

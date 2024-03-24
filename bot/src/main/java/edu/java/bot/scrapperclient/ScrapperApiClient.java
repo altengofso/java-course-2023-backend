@@ -40,6 +40,7 @@ public class ScrapperApiClient {
             .uri(uriBuilder -> uriBuilder.path(TG_CHAT_ID_PATH).build(chatId))
             .retrieve()
             .bodyToMono(ChatResponse.class)
+            .onErrorResume(Exception.class, e -> Mono.empty())
             .block();
     }
 
@@ -49,6 +50,7 @@ public class ScrapperApiClient {
             .uri(uriBuilder -> uriBuilder.path(TG_CHAT_ID_PATH).build(chatId))
             .retrieve()
             .bodyToMono(ChatResponse.class)
+            .onErrorResume(Exception.class, e -> Mono.empty())
             .block();
     }
 
@@ -59,6 +61,7 @@ public class ScrapperApiClient {
             .header(TG_CHAT_ID_HEADER, String.valueOf(chatId))
             .retrieve()
             .bodyToMono(ListLinksResponse.class)
+            .onErrorResume(Exception.class, e -> Mono.empty())
             .block();
     }
 
@@ -70,6 +73,7 @@ public class ScrapperApiClient {
             .body(Mono.just(addLinkRequest), AddLinkRequest.class)
             .retrieve()
             .bodyToMono(LinkResponse.class)
+            .onErrorResume(Exception.class, e -> Mono.empty())
             .block();
     }
 
@@ -81,6 +85,7 @@ public class ScrapperApiClient {
             .body(Mono.just(removeLinkRequest), RemoveLinkRequest.class)
             .retrieve()
             .bodyToMono(LinkResponse.class)
+            .onErrorResume(Exception.class, e -> Mono.empty())
             .block();
     }
 }

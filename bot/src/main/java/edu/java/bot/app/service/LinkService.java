@@ -38,8 +38,7 @@ public class LinkService {
         try {
             URI uri = new URI(link);
             if (uriValidator.isValidUri(uri)) {
-                scrapperApiClient.addLink(user.getId(), new AddLinkRequest(uri));
-                return SUCCESS_TRACK;
+                return scrapperApiClient.addLink(user.getId(), new AddLinkRequest(uri)) == null ? FAIL : SUCCESS_TRACK;
             }
             log.error(TRACK_LOG_ERROR.formatted(link, user.getId()));
             return FAIL;
@@ -61,8 +60,8 @@ public class LinkService {
                 .links()
                 .stream()
                 .anyMatch(linkResponse -> linkResponse.url().equals(uri))) {
-                scrapperApiClient.deleteLink(user.getId(), new RemoveLinkRequest(uri));
-                return SUCCESS_UNTRACK;
+                return scrapperApiClient.deleteLink(user.getId(), new RemoveLinkRequest(uri)) == null
+                    ? FAIL : SUCCESS_UNTRACK;
             }
             log.error(UNTRACK_LOG_ERROR.formatted(link, user.getId()));
             return FAIL;

@@ -27,11 +27,6 @@ public class StartCommand implements Command {
 
     @Override
     public SendMessage handle(long id) {
-        var chat = scrapperApiClient.getChat(id);
-        if (chat != null) {
-            return new SendMessage(id, FAIL);
-        }
-        scrapperApiClient.registerChat(id);
-        return new SendMessage(id, SUCCESS);
+        return scrapperApiClient.registerChat(id) == null ? new SendMessage(id, FAIL) : new SendMessage(id, SUCCESS);
     }
 }
