@@ -37,21 +37,25 @@ public class JdbcLinkUpdaterService implements LinkUpdaterService {
         for (var link : links) {
             var client = apiClients
                 .stream()
-                .filter(apiClient -> apiClient.canAccess(link.url().toString()))
+                .filter(apiClient -> apiClient.canAccess(link.getUrl().toString()))
                 .findFirst();
             if (client.isPresent()) {
-                var clientResponse = client.get().getResponse(link.url().toString());
+                var clientResponse = client.get().getResponse(link.getUrl().toString());
                 OffsetDateTime newLastCheckedAt = OffsetDateTime.now(ZoneOffset.UTC);
                 OffsetDateTime newUpdatedAt = clientResponse.updateAt();
-                if (link.updatedAt() == null || link.updatedAt().isBefore(newUpdatedAt)) {
+                if (link.getUpdatedAt() == null || link.getUpdatedAt().isBefore(newUpdatedAt)) {
                     LinkDto updatedLink = linkRepository.setUpdatedAtAndLastCheckAtById(
-                        link.id(),
+                        link.getId(),
                         newUpdatedAt,
                         newLastCheckedAt
                     );
                     updates.put(
                         updatedLink,
-                        subscriptionRepository.findAllByLinkId(link.id()).stream().map(SubscriptionDto::chatId).toList()
+                        subscriptionRepository
+                            .findAllByLinkId(link.getId())
+                            .stream()
+                            .map(SubscriptionDto::getChatId)
+                            .toList()
                     );
                 }
             }
@@ -65,10 +69,10 @@ public class JdbcLinkUpdaterService implements LinkUpdaterService {
             LinkDto link = entry.getKey();
             List<Long> tgChatIds = entry.getValue();
             String description = DESCRIPTION_FORMAT.formatted(
-                link.url().toString(),
-                link.updatedAt().toLocalDateTime().toString()
+                link.getUrl().toString(),
+                link.getUpdatedAt().toLocalDateTime().toString()
             );
-            botApiClient.sendUpdates(new LinkUpdate(link.id(), link.url(), description, tgChatIds));
+            botApiClient.sendUpdates(new LinkUpdate(link.getId(), link.getUrl(), description, tgChatIds));
         }
     }
 }

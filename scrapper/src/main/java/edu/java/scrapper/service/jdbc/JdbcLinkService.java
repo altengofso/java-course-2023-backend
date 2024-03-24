@@ -26,7 +26,7 @@ public class JdbcLinkService implements LinkService {
         }
         var linkList = linkRepository.findAllByChatId(chatId)
             .stream()
-            .map(linkDto -> new LinkResponse(linkDto.id(), linkDto.url()))
+            .map(linkDto -> new LinkResponse(linkDto.getId(), linkDto.getUrl()))
             .toList();
         return new ListLinkResponse(linkList, linkList.size());
     }
@@ -40,8 +40,8 @@ public class JdbcLinkService implements LinkService {
             throw new ConflictException(ExceptionMessage.LINK_CONFLICT_MESSAGE.formatted(url));
         }
         var link = linkRepository.add(url);
-        subscriptionRepository.add(link.id(), chatId);
-        return new LinkResponse(link.id(), link.url());
+        subscriptionRepository.add(link.getId(), chatId);
+        return new LinkResponse(link.getId(), link.getUrl());
     }
 
     @Override
@@ -50,11 +50,11 @@ public class JdbcLinkService implements LinkService {
             throw new NotFoundException(ExceptionMessage.LINK_NOTFOUND_MESSAGE);
         }
         var link = linkRepository.findByUrl(url).orElseThrow();
-        subscriptionRepository.remove(link.id(), chatId);
-        if (subscriptionRepository.findAllByLinkId(link.id()).isEmpty()) {
-            linkRepository.remove(link.id());
+        subscriptionRepository.remove(link.getId(), chatId);
+        if (subscriptionRepository.findAllByLinkId(link.getId()).isEmpty()) {
+            linkRepository.remove(link.getId());
         }
-        return new LinkResponse(link.id(), url);
+        return new LinkResponse(link.getId(), url);
     }
 
     @Override
@@ -63,6 +63,6 @@ public class JdbcLinkService implements LinkService {
         if (link.isEmpty()) {
             return false;
         }
-        return subscriptionRepository.findByLinkIdAndChatId(link.orElseThrow().id(), chatId).isPresent();
+        return subscriptionRepository.findByLinkIdAndChatId(link.orElseThrow().getId(), chatId).isPresent();
     }
 }

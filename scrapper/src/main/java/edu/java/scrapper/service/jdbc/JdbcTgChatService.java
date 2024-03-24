@@ -20,7 +20,7 @@ public class JdbcTgChatService implements TgChatService {
         if (chat.isEmpty()) {
             throw new NotFoundException(ExceptionMessage.TGCHAT_NOTFOUND_MESSAGE);
         }
-        return chat.map(chatDto -> new ChatResponse(chatDto.id(), chatDto.createdAt())).orElseThrow();
+        return chat.map(chatDto -> new ChatResponse(chatDto.getId(), chatDto.getCreatedAt())).orElseThrow();
     }
 
     @Override
@@ -29,7 +29,7 @@ public class JdbcTgChatService implements TgChatService {
             throw new ConflictException(ExceptionMessage.TGCHAT_CONFLICT_MESSAGE.formatted(chatId));
         }
         var chat = chatRepository.add(chatId);
-        return new ChatResponse(chat.id(), chat.createdAt());
+        return new ChatResponse(chat.getId(), chat.getCreatedAt());
     }
 
     @Override
@@ -38,7 +38,7 @@ public class JdbcTgChatService implements TgChatService {
             throw new NotFoundException(ExceptionMessage.TGCHAT_NOTFOUND_MESSAGE);
         }
         var chat = chatRepository.remove(chatId);
-        return new ChatResponse(chat.id(), chat.createdAt());
+        return new ChatResponse(chat.getId(), chat.getCreatedAt());
     }
 
     @Override

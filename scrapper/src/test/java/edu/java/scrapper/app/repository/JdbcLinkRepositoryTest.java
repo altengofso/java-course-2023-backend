@@ -43,7 +43,7 @@ public class JdbcLinkRepositoryTest extends IntegrationEnvironment {
     void removeTest() {
         URI url = new URI("http://example.com");
         LinkDto added = jdbcLinkRepository.add(url);
-        jdbcLinkRepository.remove(added.id());
+        jdbcLinkRepository.remove(added.getId());
         assertThat(jdbcLinkRepository.findByUrl(url)).isEmpty();
     }
 
@@ -70,7 +70,7 @@ public class JdbcLinkRepositoryTest extends IntegrationEnvironment {
         LinkDto second = jdbcLinkRepository.add(new URI("http://example2.com"));
         List<LinkDto> expected = List.of(first, second);
         expected.forEach(linkDto -> jdbcClient.sql("insert into subscription(link_id, chat_id) values (?, ?)")
-            .param(linkDto.id())
+            .param(linkDto.getId())
             .param(1L)
             .update());
         List<LinkDto> actual = jdbcLinkRepository.findAllByChatId(chatId);
@@ -107,9 +107,9 @@ public class JdbcLinkRepositoryTest extends IntegrationEnvironment {
         LinkDto added = jdbcLinkRepository.add(url);
         OffsetDateTime updatedAt = OffsetDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS);
         OffsetDateTime lastCheckAt = OffsetDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS);
-        jdbcLinkRepository.setUpdatedAtAndLastCheckAtById(added.id(), updatedAt, lastCheckAt);
+        jdbcLinkRepository.setUpdatedAtAndLastCheckAtById(added.getId(), updatedAt, lastCheckAt);
         LinkDto actual = jdbcLinkRepository.findByUrl(url).orElseThrow();
-        assertThat(actual.updatedAt()).isEqualTo(updatedAt);
-        assertThat(actual.lastCheckAt()).isEqualTo(lastCheckAt);
+        assertThat(actual.getUpdatedAt()).isEqualTo(updatedAt);
+        assertThat(actual.getLastCheckAt()).isEqualTo(lastCheckAt);
     }
 }
