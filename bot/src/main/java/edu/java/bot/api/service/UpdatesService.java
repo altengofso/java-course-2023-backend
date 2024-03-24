@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UpdatesService {
-    private static final String UPDATE_MESSAGE = "Обновление по ссылке %s";
     private final BotController botController;
 
     public void sendUpdates(LinkUpdate linkUpdate) {
@@ -17,7 +16,7 @@ public class UpdatesService {
             botController.sendMessage(
                 new SendMessage(
                     chatId,
-                    UPDATE_MESSAGE.formatted(linkUpdate.url())
+                    linkUpdate.description()
                 )
             );
         }

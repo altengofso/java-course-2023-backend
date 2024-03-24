@@ -5,7 +5,6 @@ import edu.java.bot.app.models.user.User;
 import edu.java.bot.app.models.user.UserState;
 import edu.java.bot.scrapperclient.ScrapperApiClient;
 import edu.java.bot.scrapperclient.models.AddLinkRequest;
-import edu.java.bot.scrapperclient.models.LinkResponse;
 import edu.java.bot.scrapperclient.models.RemoveLinkRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -61,8 +60,7 @@ public class LinkService {
             if (scrapperApiClient.getAllLinks(user.getId())
                 .links()
                 .stream()
-                .map(LinkResponse::url)
-                .toList().contains(uri)) {
+                .anyMatch(linkResponse -> linkResponse.url().equals(uri))) {
                 scrapperApiClient.deleteLink(user.getId(), new RemoveLinkRequest(uri));
                 return SUCCESS_UNTRACK;
             }

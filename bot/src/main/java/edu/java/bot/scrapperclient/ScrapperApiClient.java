@@ -8,7 +8,6 @@ import edu.java.bot.scrapperclient.models.ListLinksResponse;
 import edu.java.bot.scrapperclient.models.RemoveLinkRequest;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 public class ScrapperApiClient {
@@ -26,42 +25,31 @@ public class ScrapperApiClient {
     }
 
     public ChatResponse getChat(long chatId) {
-        try {
-            return webClient
-                .get()
-                .uri(uriBuilder -> uriBuilder.path(TG_CHAT_ID_PATH).build(chatId))
-                .retrieve()
-                .bodyToMono(ChatResponse.class)
-                .block();
-        } catch (WebClientResponseException e) {
-            return null;
-        }
+        return webClient
+            .get()
+            .uri(uriBuilder -> uriBuilder.path(TG_CHAT_ID_PATH).build(chatId))
+            .retrieve()
+            .bodyToMono(ChatResponse.class)
+            .onErrorResume(Exception.class, e -> Mono.empty())
+            .block();
     }
 
     public ChatResponse registerChat(long chatId) {
-        try {
-            return webClient
-                .post()
-                .uri(uriBuilder -> uriBuilder.path(TG_CHAT_ID_PATH).build(chatId))
-                .retrieve()
-                .bodyToMono(ChatResponse.class)
-                .block();
-        } catch (WebClientResponseException e) {
-            return null;
-        }
+        return webClient
+            .post()
+            .uri(uriBuilder -> uriBuilder.path(TG_CHAT_ID_PATH).build(chatId))
+            .retrieve()
+            .bodyToMono(ChatResponse.class)
+            .block();
     }
 
     public ChatResponse deleteChat(long chatId) {
-        try {
-            return webClient
-                .delete()
-                .uri(uriBuilder -> uriBuilder.path(TG_CHAT_ID_PATH).build(chatId))
-                .retrieve()
-                .bodyToMono(ChatResponse.class)
-                .block();
-        } catch (WebClientResponseException e) {
-            return null;
-        }
+        return webClient
+            .delete()
+            .uri(uriBuilder -> uriBuilder.path(TG_CHAT_ID_PATH).build(chatId))
+            .retrieve()
+            .bodyToMono(ChatResponse.class)
+            .block();
     }
 
     public ListLinksResponse getAllLinks(long chatId) {
