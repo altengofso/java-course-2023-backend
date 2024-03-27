@@ -1,4 +1,4 @@
-package edu.java.scrapper.app.repository;
+package edu.java.scrapper.repository;
 
 import edu.java.scrapper.IntegrationEnvironment;
 import edu.java.scrapper.repository.dto.LinkDto;
@@ -35,8 +35,8 @@ public class JdbcSubscriptionRepositoryTest extends IntegrationEnvironment {
         jdbcClient.sql("insert into chat (id) values (?)")
             .param(CHAT_ID)
             .update();
-        jdbcSubscriptionRepository.add(linkDto.id(), CHAT_ID);
-        assertThat(jdbcSubscriptionRepository.findByLinkIdAndChatId(linkDto.id(), CHAT_ID)).isPresent();
+        jdbcSubscriptionRepository.add(linkDto.getId(), CHAT_ID);
+        assertThat(jdbcSubscriptionRepository.findByLinkIdAndChatId(linkDto.getId(), CHAT_ID)).isPresent();
     }
 
     @Test
@@ -51,9 +51,9 @@ public class JdbcSubscriptionRepositoryTest extends IntegrationEnvironment {
         jdbcClient.sql("insert into chat (id) values (?)")
             .param(CHAT_ID)
             .update();
-        jdbcSubscriptionRepository.add(linkDto.id(), CHAT_ID);
-        jdbcSubscriptionRepository.remove(linkDto.id(), CHAT_ID);
-        assertThat(jdbcSubscriptionRepository.findByLinkIdAndChatId(linkDto.id(), CHAT_ID)).isNotPresent();
+        jdbcSubscriptionRepository.add(linkDto.getId(), CHAT_ID);
+        jdbcSubscriptionRepository.remove(linkDto.getId(), CHAT_ID);
+        assertThat(jdbcSubscriptionRepository.findByLinkIdAndChatId(linkDto.getId(), CHAT_ID)).isNotPresent();
     }
 
     @Test
@@ -68,8 +68,8 @@ public class JdbcSubscriptionRepositoryTest extends IntegrationEnvironment {
         jdbcClient.sql("insert into chat (id) values (?)")
             .param(CHAT_ID)
             .update();
-        SubscriptionDto expected = jdbcSubscriptionRepository.add(linkDto.id(), CHAT_ID);
-        SubscriptionDto actual = jdbcSubscriptionRepository.findByLinkIdAndChatId(linkDto.id(), CHAT_ID).orElseThrow();
+        SubscriptionDto expected = jdbcSubscriptionRepository.add(linkDto.getId(), CHAT_ID);
+        SubscriptionDto actual = jdbcSubscriptionRepository.findByLinkIdAndChatId(linkDto.getId(), CHAT_ID).orElseThrow();
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -77,7 +77,7 @@ public class JdbcSubscriptionRepositoryTest extends IntegrationEnvironment {
     @Transactional
     @Rollback
     @SneakyThrows
-    void findAllByLinkIdTesT() {
+    void findAllByLinkIdTest() {
         LinkDto linkDto = jdbcClient.sql("insert into link (url) values(?) returning *")
             .param(URL)
             .query(LinkDto.class)
@@ -85,7 +85,7 @@ public class JdbcSubscriptionRepositoryTest extends IntegrationEnvironment {
         jdbcClient.sql("insert into chat (id) values (?)")
             .param(CHAT_ID)
             .update();
-        SubscriptionDto expected = jdbcSubscriptionRepository.add(linkDto.id(), CHAT_ID);
-        assertThat(jdbcSubscriptionRepository.findAllByLinkId(linkDto.id())).containsExactly(expected);
+        SubscriptionDto expected = jdbcSubscriptionRepository.add(linkDto.getId(), CHAT_ID);
+        assertThat(jdbcSubscriptionRepository.findAllByLinkId(linkDto.getId())).containsExactly(expected);
     }
 }

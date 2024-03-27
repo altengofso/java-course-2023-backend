@@ -5,7 +5,7 @@ import edu.java.scrapper.controller.dto.ApiErrorResponse;
 import edu.java.scrapper.controller.dto.LinkResponse;
 import edu.java.scrapper.controller.dto.ListLinkResponse;
 import edu.java.scrapper.controller.dto.RemoveLinkRequest;
-import edu.java.scrapper.service.jdbc.JdbcLinkService;
+import edu.java.scrapper.service.LinkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class LinkController {
     private static final String TG_CHAT_ID_HEADER = "Tg-Chat-Id";
-    private final JdbcLinkService linkService;
+    private final LinkService linkService;
 
     @Operation(summary = "Получить все отслеживаемые ссылки")
     @ApiResponses(value = {

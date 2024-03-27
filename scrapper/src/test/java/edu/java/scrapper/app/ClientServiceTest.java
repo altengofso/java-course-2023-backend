@@ -1,5 +1,6 @@
 package edu.java.scrapper.app;
 
+import edu.java.scrapper.IntegrationEnvironment;
 import edu.java.scrapper.ScrapperApplication;
 import edu.java.scrapper.client.apiclient.ApiClient;
 import edu.java.scrapper.client.apiclient.GithubApiClient;
@@ -13,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(classes = {ScrapperApplication.class})
-public class ClientServiceTest {
+@SpringBootTest
+public class ClientServiceTest extends IntegrationEnvironment {
     @Autowired
     private ClientService clientService;
 

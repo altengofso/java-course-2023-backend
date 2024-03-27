@@ -1,9 +1,13 @@
 package edu.java.scrapper.service;
 
-public interface TgChatService {
-    void registerChat(long chatId);
+import edu.java.scrapper.controller.dto.ChatResponse;
 
-    void deleteChat(long chatId);
+public interface TgChatService {
+    ChatResponse getChat(long chatId);
+
+    ChatResponse registerChat(long chatId);
+
+    ChatResponse deleteChat(long chatId);
 
     boolean verifyChatExistence(long chatId);
 }

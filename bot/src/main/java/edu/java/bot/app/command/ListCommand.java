@@ -1,9 +1,11 @@
 package edu.java.bot.app.command;
 
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.app.models.user.User;
-import edu.java.bot.app.repository.UserRepository;
+import edu.java.bot.scrapperclient.ScrapperApiClient;
+import edu.java.bot.scrapperclient.models.ListLinksResponse;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 
 @Component("list")
@@ -13,7 +15,7 @@ public class ListCommand implements Command {
     private static final String DESCRIPTION = "показать список отслеживаемых ссылок";
     private static final String NO_LINKS = "нет отслеживаемых ссылок";
 
-    private final UserRepository userRepository;
+    private final ScrapperApiClient scrapperApiClient;
 
     @Override
     public String command() {
@@ -26,11 +28,18 @@ public class ListCommand implements Command {
     }
 
     @Override
+    @SneakyThrows
     public SendMessage handle(long id) {
-        User user = userRepository.findById(id);
-        if (user.getLinks().isEmpty()) {
+        ListLinksResponse listLinksResponse = scrapperApiClient.getAllLinks(id);
+        if (listLinksResponse.links().isEmpty()) {
             return new SendMessage(id, NO_LINKS);
         }
-        return new SendMessage(id, user.getLinksList());
+        return new SendMessage(
+            id,
+            listLinksResponse.links()
+                .stream()
+                .map(linkResponse -> linkResponse.url().toString())
+                .collect(Collectors.joining("\n"))
+        );
     }
 }

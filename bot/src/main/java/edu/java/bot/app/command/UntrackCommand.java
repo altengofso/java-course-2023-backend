@@ -4,6 +4,9 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.app.models.user.User;
 import edu.java.bot.app.models.user.UserState;
 import edu.java.bot.app.repository.UserRepository;
+import edu.java.bot.scrapperclient.ScrapperApiClient;
+import edu.java.bot.scrapperclient.models.ListLinksResponse;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +18,7 @@ public class UntrackCommand implements Command {
     private static final String NO_LINKS = "нет отслеживаемых ссылок";
 
     private final UserRepository userRepository;
+    private final ScrapperApiClient scrapperApiClient;
 
     @Override
     public String command() {
@@ -28,11 +32,18 @@ public class UntrackCommand implements Command {
 
     @Override
     public synchronized SendMessage handle(long id) {
-        User user = userRepository.findById(id);
-        if (user.getLinks().isEmpty()) {
+        ListLinksResponse listLinksResponse = scrapperApiClient.getAllLinks(id);
+        if (listLinksResponse.links().isEmpty()) {
             return new SendMessage(id, NO_LINKS);
         }
+        User user = userRepository.addUser(new User(id));
         user.setUserState(UserState.AWAITING_UNTRACK_LINK);
-        return new SendMessage(id, user.getLinksList());
+        return new SendMessage(
+            id,
+            listLinksResponse.links()
+                .stream()
+                .map(linkResponse -> linkResponse.url().toString())
+                .collect(Collectors.joining("\n"))
+        );
     }
 }

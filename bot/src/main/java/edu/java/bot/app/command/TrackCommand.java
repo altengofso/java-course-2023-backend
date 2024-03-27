@@ -13,6 +13,7 @@ public class TrackCommand implements Command {
     private static final String COMMAND = "/track";
     private static final String DESCRIPTION = "добавить ссылку в отслеживание";
     private final static String AWAITING_TRACK_LINK = "введите ссылку для отслеживания";
+
     private final UserRepository userRepository;
 
     @Override
@@ -27,7 +28,7 @@ public class TrackCommand implements Command {
 
     @Override
     public synchronized SendMessage handle(long id) {
-        User user = userRepository.findById(id);
+        User user = userRepository.addUser(new User(id));
         user.setUserState(UserState.AWAITING_TRACK_LINK);
         return new SendMessage(id, AWAITING_TRACK_LINK);
     }

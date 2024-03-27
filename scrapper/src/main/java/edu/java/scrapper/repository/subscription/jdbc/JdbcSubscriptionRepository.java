@@ -3,7 +3,6 @@ package edu.java.scrapper.repository.subscription.jdbc;
 import edu.java.scrapper.repository.dto.SubscriptionDto;
 import edu.java.scrapper.repository.subscription.SubscriptionRepository;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,7 @@ public class JdbcSubscriptionRepository implements SubscriptionRepository {
                 on conflict do nothing returning *""")
             .param(linkId)
             .param(chatId)
-            .param(OffsetDateTime.now(ZoneOffset.UTC))
+            .param(OffsetDateTime.now())
             .query(SubscriptionDto.class)
             .single();
     }
