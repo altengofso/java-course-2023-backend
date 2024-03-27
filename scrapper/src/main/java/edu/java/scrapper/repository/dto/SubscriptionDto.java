@@ -5,7 +5,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,7 @@ public class SubscriptionDto {
     private long linkId;
     @Id
     private long chatId;
-    private OffsetDateTime createdAt = OffsetDateTime.now(ZoneOffset.UTC);
+    private OffsetDateTime createdAt = OffsetDateTime.now();
 
     public SubscriptionDto(long linkId, long chatId) {
         this.linkId = linkId;

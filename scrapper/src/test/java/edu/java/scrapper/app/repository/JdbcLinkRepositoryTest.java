@@ -94,7 +94,7 @@ public class JdbcLinkRepositoryTest extends IntegrationEnvironment {
     @SneakyThrows
     void findByLastCheckAtLessThanOrNullTest() {
         LinkDto expected = jdbcLinkRepository.add(new URI("http://example.com"));
-        List<LinkDto> actual = jdbcLinkRepository.findByLastCheckAtLessThanOrNull(OffsetDateTime.now(ZoneOffset.UTC));
+        List<LinkDto> actual = jdbcLinkRepository.findByLastCheckAtLessThanOrNull(OffsetDateTime.now());
         assertThat(actual).containsExactly(expected);
     }
 
@@ -105,8 +105,8 @@ public class JdbcLinkRepositoryTest extends IntegrationEnvironment {
     void setUpdatedAtAndLastCheckAtByIdTest() {
         URI url = new URI("http://example.com");
         LinkDto added = jdbcLinkRepository.add(url);
-        OffsetDateTime updatedAt = OffsetDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS);
-        OffsetDateTime lastCheckAt = OffsetDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS);
+        OffsetDateTime updatedAt = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        OffsetDateTime lastCheckAt = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         jdbcLinkRepository.setUpdatedAtAndLastCheckAtById(added.getId(), updatedAt, lastCheckAt);
         LinkDto actual = jdbcLinkRepository.findByUrl(url).orElseThrow();
         assertThat(actual.getUpdatedAt()).isEqualTo(updatedAt);

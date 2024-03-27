@@ -9,7 +9,6 @@ import edu.java.scrapper.repository.link.jpa.JpaLinkRepository;
 import edu.java.scrapper.repository.subscription.jpa.JpaSubscriptionRepository;
 import edu.java.scrapper.service.LinkUpdaterService;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,12 +38,11 @@ public class JpaLinkUpdaterService implements LinkUpdaterService {
                 .findFirst();
             if (client.isPresent()) {
                 var clientResponse = client.get().getResponse(link.getUrl().toString());
-                OffsetDateTime newLastCheckedAt = OffsetDateTime.now(ZoneOffset.UTC);
-                OffsetDateTime newUpdatedAt = clientResponse.updateAt();
-                if (link.getUpdatedAt() == null || link.getUpdatedAt().isBefore(newUpdatedAt)) {
-                    link.setUpdatedAt(newUpdatedAt);
-                    link.setLastCheckAt(newLastCheckedAt);
-                    LinkDto updatedLink = linkRepository.save(link);
+                OffsetDateTime prevUpdatedAt = link.getUpdatedAt();
+                link.setUpdatedAt(clientResponse.updateAt());
+                link.setLastCheckAt(OffsetDateTime.now());
+                LinkDto updatedLink = linkRepository.save(link);
+                if (prevUpdatedAt == null || prevUpdatedAt.isBefore(updatedLink.getUpdatedAt())) {
                     updates.put(
                         updatedLink,
                         subscriptionRepository
@@ -55,7 +53,6 @@ public class JpaLinkUpdaterService implements LinkUpdaterService {
                     );
                 }
             }
-
         }
         return updates;
     }

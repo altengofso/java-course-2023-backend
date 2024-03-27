@@ -9,7 +9,6 @@ import edu.java.scrapper.repository.link.jdbc.JdbcLinkRepository;
 import edu.java.scrapper.repository.subscription.jdbc.JdbcSubscriptionRepository;
 import edu.java.scrapper.service.LinkUpdaterService;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,14 +38,13 @@ public class JdbcLinkUpdaterService implements LinkUpdaterService {
                 .findFirst();
             if (client.isPresent()) {
                 var clientResponse = client.get().getResponse(link.getUrl().toString());
-                OffsetDateTime newLastCheckedAt = OffsetDateTime.now(ZoneOffset.UTC);
-                OffsetDateTime newUpdatedAt = clientResponse.updateAt();
-                if (link.getUpdatedAt() == null || link.getUpdatedAt().isBefore(newUpdatedAt)) {
-                    LinkDto updatedLink = linkRepository.setUpdatedAtAndLastCheckAtById(
-                        link.getId(),
-                        newUpdatedAt,
-                        newLastCheckedAt
-                    );
+                OffsetDateTime prevUpdatedAt = link.getUpdatedAt();
+                LinkDto updatedLink = linkRepository.setUpdatedAtAndLastCheckAtById(
+                    link.getId(),
+                    clientResponse.updateAt(),
+                    OffsetDateTime.now()
+                );
+                if (prevUpdatedAt == null || prevUpdatedAt.isBefore(updatedLink.getUpdatedAt())) {
                     updates.put(
                         updatedLink,
                         subscriptionRepository
@@ -57,7 +55,6 @@ public class JdbcLinkUpdaterService implements LinkUpdaterService {
                     );
                 }
             }
-
         }
         return updates;
     }

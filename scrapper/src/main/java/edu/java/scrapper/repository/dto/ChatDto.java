@@ -4,7 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class ChatDto {
     @Id
     private long id;
-    private OffsetDateTime createdAt = OffsetDateTime.now(ZoneOffset.UTC);
+    private OffsetDateTime createdAt = OffsetDateTime.now();
 
     public ChatDto(long id) {
         this.id = id;

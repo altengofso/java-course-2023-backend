@@ -19,5 +19,8 @@ public interface JpaLinkRepository extends JpaRepository<LinkDto, Long> {
 
     Optional<LinkDto> findByUrl(URI url);
 
+    @Override
+    void deleteById(Long aLong);
+
     List<LinkDto> findAllByLastCheckAtIsLessThanOrLastCheckAtIsNull(OffsetDateTime lastCheckAt);
 }
