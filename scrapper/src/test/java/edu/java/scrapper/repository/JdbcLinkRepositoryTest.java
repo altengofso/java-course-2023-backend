@@ -1,4 +1,4 @@
-package edu.java.scrapper.app.repository;
+package edu.java.scrapper.repository;
 
 import edu.java.scrapper.IntegrationEnvironment;
 import edu.java.scrapper.repository.dto.LinkDto;

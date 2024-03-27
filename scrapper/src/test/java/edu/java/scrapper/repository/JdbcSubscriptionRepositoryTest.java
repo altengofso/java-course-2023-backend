@@ -1,4 +1,4 @@
-package edu.java.scrapper.app.repository;
+package edu.java.scrapper.repository;
 
 import edu.java.scrapper.IntegrationEnvironment;
 import edu.java.scrapper.repository.dto.LinkDto;
@@ -77,7 +77,7 @@ public class JdbcSubscriptionRepositoryTest extends IntegrationEnvironment {
     @Transactional
     @Rollback
     @SneakyThrows
-    void findAllByLinkIdTesT() {
+    void findAllByLinkIdTest() {
         LinkDto linkDto = jdbcClient.sql("insert into link (url) values(?) returning *")
             .param(URL)
             .query(LinkDto.class)
