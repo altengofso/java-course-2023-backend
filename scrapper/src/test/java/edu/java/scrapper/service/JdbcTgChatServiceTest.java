@@ -5,7 +5,6 @@ import edu.java.scrapper.controller.dto.ChatResponse;
 import edu.java.scrapper.controller.exceptions.ConflictException;
 import edu.java.scrapper.controller.exceptions.NotFoundException;
 import edu.java.scrapper.repository.chat.jdbc.JdbcChatRepository;
-import edu.java.scrapper.repository.chat.jpa.JpaChatRepository;
 import edu.java.scrapper.repository.dto.ChatDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
