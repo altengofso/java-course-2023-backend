@@ -10,10 +10,11 @@ public class UserRepository {
     private final Map<Long, User> database = new HashMap<>();
 
     public User findById(long id) {
-        return database.get(id);
+        return database.getOrDefault(id, null);
     }
 
-    public void addUser(User user) {
+    public User addUser(User user) {
         database.put(user.getId(), user);
+        return findById(user.getId());
     }
 }

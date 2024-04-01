@@ -3,7 +3,6 @@ package edu.java.scrapper.repository.chat.jdbc;
 import edu.java.scrapper.repository.chat.ChatRepository;
 import edu.java.scrapper.repository.dto.ChatDto;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,7 @@ public class JdbcChatRepository implements ChatRepository {
     public ChatDto add(long chatId) {
         return jdbcClient.sql("insert into chat(id, created_at) values (?, ?) on conflict do nothing returning *")
             .param(chatId)
-            .param(OffsetDateTime.now(ZoneOffset.UTC))
+            .param(OffsetDateTime.now())
             .query(ChatDto.class)
             .single();
     }

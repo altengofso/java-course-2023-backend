@@ -2,6 +2,7 @@ package edu.java.bot.scrapperclient;
 
 import edu.java.bot.scrapperclient.filter.ErrorLoggingFilter;
 import edu.java.bot.scrapperclient.models.AddLinkRequest;
+import edu.java.bot.scrapperclient.models.ChatResponse;
 import edu.java.bot.scrapperclient.models.LinkResponse;
 import edu.java.bot.scrapperclient.models.ListLinksResponse;
 import edu.java.bot.scrapperclient.models.RemoveLinkRequest;
@@ -23,21 +24,33 @@ public class ScrapperApiClient {
             .build();
     }
 
-    public void registerChat(long chatId) {
-        webClient
-            .post()
+    public ChatResponse getChat(long chatId) {
+        return webClient
+            .get()
             .uri(uriBuilder -> uriBuilder.path(TG_CHAT_ID_PATH).build(chatId))
             .retrieve()
-            .bodyToMono(String.class)
+            .bodyToMono(ChatResponse.class)
+            .onErrorResume(Exception.class, e -> Mono.empty())
             .block();
     }
 
-    public void deleteChat(long chatId) {
-        webClient
+    public ChatResponse registerChat(long chatId) {
+        return webClient
+            .post()
+            .uri(uriBuilder -> uriBuilder.path(TG_CHAT_ID_PATH).build(chatId))
+            .retrieve()
+            .bodyToMono(ChatResponse.class)
+            .onErrorResume(Exception.class, e -> Mono.empty())
+            .block();
+    }
+
+    public ChatResponse deleteChat(long chatId) {
+        return webClient
             .delete()
             .uri(uriBuilder -> uriBuilder.path(TG_CHAT_ID_PATH).build(chatId))
             .retrieve()
-            .bodyToMono(String.class)
+            .bodyToMono(ChatResponse.class)
+            .onErrorResume(Exception.class, e -> Mono.empty())
             .block();
     }
 
@@ -48,6 +61,7 @@ public class ScrapperApiClient {
             .header(TG_CHAT_ID_HEADER, String.valueOf(chatId))
             .retrieve()
             .bodyToMono(ListLinksResponse.class)
+            .onErrorResume(Exception.class, e -> Mono.empty())
             .block();
     }
 
@@ -59,6 +73,7 @@ public class ScrapperApiClient {
             .body(Mono.just(addLinkRequest), AddLinkRequest.class)
             .retrieve()
             .bodyToMono(LinkResponse.class)
+            .onErrorResume(Exception.class, e -> Mono.empty())
             .block();
     }
 
@@ -70,6 +85,7 @@ public class ScrapperApiClient {
             .body(Mono.just(removeLinkRequest), RemoveLinkRequest.class)
             .retrieve()
             .bodyToMono(LinkResponse.class)
+            .onErrorResume(Exception.class, e -> Mono.empty())
             .block();
     }
 }

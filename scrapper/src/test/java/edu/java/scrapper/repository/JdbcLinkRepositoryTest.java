@@ -1,4 +1,4 @@
-package edu.java.scrapper.app.repository;
+package edu.java.scrapper.repository;
 
 import edu.java.scrapper.IntegrationEnvironment;
 import edu.java.scrapper.repository.dto.LinkDto;
@@ -43,7 +43,7 @@ public class JdbcLinkRepositoryTest extends IntegrationEnvironment {
     void removeTest() {
         URI url = new URI("http://example.com");
         LinkDto added = jdbcLinkRepository.add(url);
-        jdbcLinkRepository.remove(added.id());
+        jdbcLinkRepository.remove(added.getId());
         assertThat(jdbcLinkRepository.findByUrl(url)).isEmpty();
     }
 
@@ -70,7 +70,7 @@ public class JdbcLinkRepositoryTest extends IntegrationEnvironment {
         LinkDto second = jdbcLinkRepository.add(new URI("http://example2.com"));
         List<LinkDto> expected = List.of(first, second);
         expected.forEach(linkDto -> jdbcClient.sql("insert into subscription(link_id, chat_id) values (?, ?)")
-            .param(linkDto.id())
+            .param(linkDto.getId())
             .param(1L)
             .update());
         List<LinkDto> actual = jdbcLinkRepository.findAllByChatId(chatId);
@@ -94,7 +94,7 @@ public class JdbcLinkRepositoryTest extends IntegrationEnvironment {
     @SneakyThrows
     void findByLastCheckAtLessThanOrNullTest() {
         LinkDto expected = jdbcLinkRepository.add(new URI("http://example.com"));
-        List<LinkDto> actual = jdbcLinkRepository.findByLastCheckAtLessThanOrNull(OffsetDateTime.now(ZoneOffset.UTC));
+        List<LinkDto> actual = jdbcLinkRepository.findByLastCheckAtLessThanOrNull(OffsetDateTime.now());
         assertThat(actual).containsExactly(expected);
     }
 
@@ -105,11 +105,11 @@ public class JdbcLinkRepositoryTest extends IntegrationEnvironment {
     void setUpdatedAtAndLastCheckAtByIdTest() {
         URI url = new URI("http://example.com");
         LinkDto added = jdbcLinkRepository.add(url);
-        OffsetDateTime updatedAt = OffsetDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS);
-        OffsetDateTime lastCheckAt = OffsetDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS);
-        jdbcLinkRepository.setUpdatedAtAndLastCheckAtById(added.id(), updatedAt, lastCheckAt);
+        OffsetDateTime updatedAt = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        OffsetDateTime lastCheckAt = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        jdbcLinkRepository.setUpdatedAtAndLastCheckAtById(added.getId(), updatedAt, lastCheckAt);
         LinkDto actual = jdbcLinkRepository.findByUrl(url).orElseThrow();
-        assertThat(actual.updatedAt()).isEqualTo(updatedAt);
-        assertThat(actual.lastCheckAt()).isEqualTo(lastCheckAt);
+        assertThat(actual.getUpdatedAt()).isEqualTo(updatedAt);
+        assertThat(actual.getLastCheckAt()).isEqualTo(lastCheckAt);
     }
 }

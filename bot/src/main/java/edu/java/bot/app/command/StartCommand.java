@@ -3,6 +3,7 @@ package edu.java.bot.app.command;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.app.models.user.User;
 import edu.java.bot.app.repository.UserRepository;
+import edu.java.bot.scrapperclient.ScrapperApiClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,8 @@ public class StartCommand implements Command {
     private static final String DESCRIPTION = "регистрация пользователя";
     private static final String SUCCESS = "Привет! Я помогу отслеживать изменения на GitHub и StackOverflow.";
     private static final String FAIL = "Уже зарегистрирован, можно начинать отслеживать ссылки";
+
+    private final ScrapperApiClient scrapperApiClient;
     private final UserRepository userRepository;
 
     @Override
@@ -27,11 +30,7 @@ public class StartCommand implements Command {
 
     @Override
     public SendMessage handle(long id) {
-        boolean exists = userRepository.findById(id) != null;
-        if (exists) {
-            return new SendMessage(id, FAIL);
-        }
         userRepository.addUser(new User(id));
-        return new SendMessage(id, SUCCESS);
+        return scrapperApiClient.registerChat(id) == null ? new SendMessage(id, FAIL) : new SendMessage(id, SUCCESS);
     }
 }
