@@ -11,9 +11,14 @@ import edu.java.bot.app.models.user.User;
 import edu.java.bot.app.models.user.UserState;
 import edu.java.bot.app.repository.UserRepository;
 import edu.java.bot.app.service.LinkService;
+import edu.java.bot.scrapperclient.ScrapperApiClient;
+import edu.java.bot.scrapperclient.models.AddLinkRequest;
+import edu.java.bot.scrapperclient.models.LinkResponse;
+import edu.java.bot.scrapperclient.models.ListLinksResponse;
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import edu.java.bot.scrapperclient.models.RemoveLinkRequest;
 import lombok.SneakyThrows;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.jupiter.api.Nested;
@@ -23,6 +28,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Enclosed.class)
@@ -39,6 +45,9 @@ public class CommandTest {
 
     @Autowired
     private LinkService linkService;
+
+    @SpyBean
+    private ScrapperApiClient scrapperApiClient;
 
     @Nested
     class StartCommandTest {
@@ -80,7 +89,7 @@ public class CommandTest {
                 /untrack - удалить ссылку из отслеживания""";
 
             long id = 2L;
-            prepareUser(id, Set.of());
+            prepareUser(id, List.of());
             prepareMock(id);
             String actual = help.handle(id).getParameters().get("text").toString();
             assertThat(actual).isEqualTo(expected);
@@ -95,7 +104,7 @@ public class CommandTest {
         @SneakyThrows
         void testListCommandReturnTrackedLinksList() {
             long id = 3L;
-            prepareUser(id, Set.of(new URI("https://github.com"), new URI("https://stackoverflow.com")));
+            prepareUser(id, List.of(new URI("https://github.com"), new URI("https://stackoverflow.com")));
             prepareMock(id);
             String expected = """
                 https://github.com
@@ -107,7 +116,7 @@ public class CommandTest {
         @Test
         void testListCommandReturnCorrectMessageWhenNoLinksTracked() {
             long id = 4L;
-            prepareUser(id, Set.of());
+            prepareUser(id, List.of());
             prepareMock(id);
             String expected = "нет отслеживаемых ссылок";
             String actual = list.handle(id).getParameters().get("text").toString();
@@ -136,7 +145,7 @@ public class CommandTest {
         @Test
         void testTrackCommandSetCorrectUserState() {
             long id = 6L;
-            prepareUser(id, Set.of());
+            prepareUser(id, List.of());
             prepareMock(id);
             track.handle(id);
             UserState expected = UserState.AWAITING_TRACK_LINK;
@@ -147,7 +156,7 @@ public class CommandTest {
         @Test
         void testTrackCommandReturnCorrectMessage() {
             long id = 7L;
-            prepareUser(id, Set.of());
+            prepareUser(id, List.of());
             prepareMock(id);
             String expected = "введите ссылку для отслеживания";
             String actual = track.handle(id).getParameters().get("text").toString();
@@ -163,7 +172,7 @@ public class CommandTest {
         @SneakyThrows
         void testUntrackCommandSetCorrectUserStateWhenTrackedLinksExists() {
             long id = 8L;
-            prepareUser(id, Set.of(new URI("https://github.com"), new URI("https://stackoverflow.com")));
+            prepareUser(id, List.of(new URI("https://github.com"), new URI("https://stackoverflow.com")));
             prepareMock(id);
             untrack.handle(id);
             UserState expected = UserState.AWAITING_UNTRACK_LINK;
@@ -175,7 +184,7 @@ public class CommandTest {
         @SneakyThrows
         void testUntrackCommandNotChangeUserStateWhenNoLinksTracked() {
             long id = 9L;
-            prepareUser(id, Set.of());
+            prepareUser(id, List.of());
             prepareMock(id);
             untrack.handle(id);
             UserState expected = UserState.REGULAR;
@@ -187,7 +196,7 @@ public class CommandTest {
         @SneakyThrows
         void testUntrackCommandReturnCorrectMessageWhenTrackedLinksExists() {
             long id = 10L;
-            prepareUser(id, Set.of(new URI("https://github.com"), new URI("https://stackoverflow.com")));
+            prepareUser(id, List.of(new URI("https://github.com"), new URI("https://stackoverflow.com")));
             prepareMock(id);
             String expected = """
                 https://github.com
@@ -199,7 +208,7 @@ public class CommandTest {
         @Test
         void testUntrackCommandReturnCorrectMessageWhenNoLinksTracked() {
             long id = 11L;
-            prepareUser(id, Set.of());
+            prepareUser(id, List.of());
             prepareMock(id);
             String expected = "нет отслеживаемых ссылок";
             String actual = untrack.handle(id).getParameters().get("text").toString();
@@ -214,7 +223,7 @@ public class CommandTest {
         @Test
         void testNonSlashCommandReturnCorrectMessageWhenNotAwaitingTrackOrUntrackLink() {
             long id = 12L;
-            prepareUser(id, Set.of());
+            prepareUser(id, List.of());
             prepareMock(id);
             String expected = "неподдерживаемая команда";
             String actual = nonSlashCommand.handle(id, "/hello").getParameters().get("text").toString();
@@ -222,11 +231,12 @@ public class CommandTest {
         }
 
         @Test
+        @SneakyThrows
         void testNonSlashCommandReturnCorrectMessageWhenSupportedLinkSentToTrack() {
             Command track = commands.get("track");
             String link = "https://github.com";
             long id = 13L;
-            prepareUser(id, Set.of());
+            prepareUser(id, List.of(new URI("https://github.com")));
             prepareMock(id);
             track.handle(id);
             String expected = "ссылка успешно добавлена в отслеживание";
@@ -235,11 +245,12 @@ public class CommandTest {
         }
 
         @Test
+        @SneakyThrows
         void testNonSlashCommandReturnCorrectMessageWhenUnsupportedLinkSentToTrack() {
             Command track = commands.get("track");
             String link = "https://yandex.ru";
             long id = 14L;
-            prepareUser(id, Set.of());
+            prepareUser(id, List.of());
             prepareMock(id);
             track.handle(id);
             String expected = "произошла ошибка, ссылка не поддерживается";
@@ -253,7 +264,7 @@ public class CommandTest {
             Command untrack = commands.get("untrack");
             String link = "https://github.com";
             long id = 15L;
-            prepareUser(id, Set.of(new URI("https://github.com")));
+            prepareUser(id, List.of(new URI("https://github.com")));
             prepareMock(id);
             untrack.handle(id);
             String expected = "ссылка успешно удалена из отслеживания";
@@ -267,7 +278,7 @@ public class CommandTest {
             Command untrack = commands.get("untrack");
             String link = "https://yandex.ru";
             long id = 16L;
-            prepareUser(id, Set.of(new URI("https://github.com")));
+            prepareUser(id, List.of(new URI("https://github.com")));
             prepareMock(id);
             untrack.handle(id);
             String expected = "произошла ошибка, ссылка не поддерживается";
@@ -276,10 +287,16 @@ public class CommandTest {
         }
     }
 
-    private void prepareUser(long id, Set<URI> links) {
+    private void prepareUser(long id, List<URI> urls) {
         User user = new User(id);
-        user.getLinks().addAll(links);
         userRepository.addUser(user);
+        List<LinkResponse> list = urls.stream().map(url -> new LinkResponse(1L, url)).toList();
+        Mockito.when(scrapperApiClient.getAllLinks(id))
+            .thenReturn(new ListLinksResponse(list, list.size()));
+        urls.stream().forEach(url -> Mockito.when(scrapperApiClient.addLink(id, new AddLinkRequest(url)))
+            .thenReturn(new LinkResponse(1L, url)));
+        urls.stream().forEach(url -> Mockito.when(scrapperApiClient.deleteLink(id, new RemoveLinkRequest(url)))
+            .thenReturn(new LinkResponse(1L, url)));
     }
 
     private void prepareMock(long id) {

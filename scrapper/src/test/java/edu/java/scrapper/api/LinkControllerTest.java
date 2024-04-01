@@ -6,12 +6,14 @@ import edu.java.scrapper.controller.dto.AddLinkRequest;
 import edu.java.scrapper.controller.dto.LinkResponse;
 import edu.java.scrapper.controller.dto.ListLinkResponse;
 import edu.java.scrapper.controller.dto.RemoveLinkRequest;
+import edu.java.scrapper.repository.chat.jdbc.JdbcChatRepository;
+import edu.java.scrapper.repository.dto.ChatDto;
 import edu.java.scrapper.repository.link.jdbc.JdbcLinkRepository;
 import edu.java.scrapper.repository.subscription.jdbc.JdbcSubscriptionRepository;
 import edu.java.scrapper.service.jdbc.JdbcLinkService;
-import edu.java.scrapper.service.jdbc.JdbcTgChatService;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -20,7 +22,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -33,7 +34,7 @@ public class LinkControllerTest {
     @Autowired
     private MockMvc mvc;
     @MockBean
-    private JdbcTgChatService tgChatService;
+    private JdbcChatRepository jdbcChatRepository;
     @MockBean
     private JdbcLinkRepository jdbcLinkRepository;
     @MockBean
@@ -51,7 +52,7 @@ public class LinkControllerTest {
         long linkId = 1L;
         URI url = new URI("https://github.com");
         ListLinkResponse listLinkResponse = new ListLinkResponse(List.of(new LinkResponse(linkId, url)), 1);
-        Mockito.doReturn(true).when(tgChatService).verifyChatExistence(CHAT_ID);
+        Mockito.doReturn(Optional.of(new ChatDto(CHAT_ID))).when(jdbcChatRepository).findById(CHAT_ID);
         Mockito.doReturn(listLinkResponse)
             .when(linkService).getAllLinks(CHAT_ID);
 
@@ -65,7 +66,7 @@ public class LinkControllerTest {
     @Test
     @SneakyThrows
     void testGetAllLinksShouldReturnNotFoundWhenNotRegisteredChatGiven() {
-        Mockito.doReturn(false).when(tgChatService).verifyChatExistence(CHAT_ID);
+        Mockito.doReturn(Optional.empty()).when(jdbcChatRepository).findById(CHAT_ID);
 
         mvc.perform(get("/links").header("Tg-Chat-Id", CHAT_ID))
             .andExpect(status().isNotFound());
@@ -78,7 +79,7 @@ public class LinkControllerTest {
         URI url = new URI("https://github.com");
         AddLinkRequest addLinkRequest = new AddLinkRequest(url);
         LinkResponse linkResponse = new LinkResponse(linkId, url);
-        Mockito.doReturn(true).when(tgChatService).verifyChatExistence(CHAT_ID);
+        Mockito.doReturn(Optional.of(new ChatDto(CHAT_ID))).when(jdbcChatRepository).findById(CHAT_ID);
         Mockito.doReturn(false).when(linkService).verifyLinkExistance(CHAT_ID, url);
         Mockito.doReturn(linkResponse)
             .when(linkService).addLink(CHAT_ID, url);
@@ -95,10 +96,9 @@ public class LinkControllerTest {
     @Test
     @SneakyThrows
     void testAddLinkShouldReturnNotFoundWhenNotRegisteredChatGiven() {
-        long linkId = 1L;
         URI url = new URI("https://github.com");
         AddLinkRequest addLinkRequest = new AddLinkRequest(url);
-        Mockito.doReturn(false).when(tgChatService).verifyChatExistence(CHAT_ID);
+        Mockito.doReturn(Optional.empty()).when(jdbcChatRepository).findById(CHAT_ID);
         Mockito.doReturn(false).when(linkService).verifyLinkExistance(CHAT_ID, url);
 
         mvc.perform(post("/links")
@@ -111,10 +111,9 @@ public class LinkControllerTest {
     @Test
     @SneakyThrows
     void testAddLinkShouldReturnConflictWhenLinkAlreadyAdded() {
-        long linkId = 1L;
         URI url = new URI("https://github.com");
         AddLinkRequest addLinkRequest = new AddLinkRequest(url);
-        Mockito.doReturn(true).when(tgChatService).verifyChatExistence(CHAT_ID);
+        Mockito.doReturn(Optional.of(new ChatDto(CHAT_ID))).when(jdbcChatRepository).findById(CHAT_ID);
         Mockito.doReturn(true).when(linkService).verifyLinkExistance(CHAT_ID, url);
 
         mvc.perform(post("/links")
@@ -131,7 +130,7 @@ public class LinkControllerTest {
         URI url = new URI("https://github.com");
         RemoveLinkRequest removeLinkRequest = new RemoveLinkRequest(url);
         LinkResponse linkResponse = new LinkResponse(linkId, url);
-        Mockito.doReturn(true).when(tgChatService).verifyChatExistence(CHAT_ID);
+        Mockito.doReturn(Optional.of(new ChatDto(CHAT_ID))).when(jdbcChatRepository).findById(CHAT_ID);
         Mockito.doReturn(true).when(linkService).verifyLinkExistance(CHAT_ID, url);
         Mockito.doReturn(linkResponse).when(linkService).deleteLink(CHAT_ID, url);
 
@@ -147,10 +146,9 @@ public class LinkControllerTest {
     @Test
     @SneakyThrows
     void testDeleteLinkShouldReturnNotFoundWhenNotRegisteredChatGiven() {
-        long linkId = 1L;
         URI url = new URI("https://github.com");
         RemoveLinkRequest removeLinkRequest = new RemoveLinkRequest(url);
-        Mockito.doReturn(false).when(tgChatService).verifyChatExistence(CHAT_ID);
+        Mockito.doReturn(Optional.empty()).when(jdbcChatRepository).findById(CHAT_ID);
 
         mvc.perform(delete("/links")
                 .header("Tg-Chat-Id", CHAT_ID)
@@ -162,10 +160,9 @@ public class LinkControllerTest {
     @Test
     @SneakyThrows
     void testDeleteLinkShouldReturnNotFoundWhenNotAddedLinkGiven() {
-        long linkId = 1L;
         URI url = new URI("https://github.com");
         RemoveLinkRequest removeLinkRequest = new RemoveLinkRequest(url);
-        Mockito.doReturn(true).when(tgChatService).verifyChatExistence(CHAT_ID);
+        Mockito.doReturn(Optional.of(new ChatDto(CHAT_ID))).when(jdbcChatRepository).findById(CHAT_ID);
         Mockito.doReturn(false).when(linkService).verifyLinkExistance(CHAT_ID, url);
 
         mvc.perform(delete("/links")

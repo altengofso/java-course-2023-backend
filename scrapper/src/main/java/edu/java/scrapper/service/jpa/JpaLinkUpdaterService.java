@@ -1,12 +1,12 @@
-package edu.java.scrapper.service.jdbc;
+package edu.java.scrapper.service.jpa;
 
 import edu.java.scrapper.client.apiclient.ApiClient;
 import edu.java.scrapper.client.botclient.BotApiClient;
 import edu.java.scrapper.client.botclient.models.LinkUpdate;
 import edu.java.scrapper.repository.dto.LinkDto;
 import edu.java.scrapper.repository.dto.SubscriptionDto;
-import edu.java.scrapper.repository.link.jdbc.JdbcLinkRepository;
-import edu.java.scrapper.repository.subscription.jdbc.JdbcSubscriptionRepository;
+import edu.java.scrapper.repository.link.jpa.JpaLinkRepository;
+import edu.java.scrapper.repository.subscription.jpa.JpaSubscriptionRepository;
 import edu.java.scrapper.service.LinkUpdaterService;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -15,16 +15,16 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class JdbcLinkUpdaterService implements LinkUpdaterService {
+public class JpaLinkUpdaterService implements LinkUpdaterService {
     private static final String DESCRIPTION_FORMAT = "Ссылка %s была обновлена %s";
-    private final JdbcLinkRepository linkRepository;
-    private final JdbcSubscriptionRepository subscriptionRepository;
+    private final JpaLinkRepository linkRepository;
+    private final JpaSubscriptionRepository subscriptionRepository;
     private final List<ApiClient> apiClients;
     private final BotApiClient botApiClient;
 
     @Override
     public void update(OffsetDateTime lastCheckAt) {
-        var links = linkRepository.findByLastCheckAtLessThanOrNull(lastCheckAt);
+        var links = linkRepository.findAllByLastCheckAtIsLessThanOrLastCheckAtIsNull(lastCheckAt);
         Map<LinkDto, List<Long>> updates = checkUpdates(links);
         sendUpdates(updates);
     }
@@ -39,11 +39,9 @@ public class JdbcLinkUpdaterService implements LinkUpdaterService {
             if (client.isPresent()) {
                 var clientResponse = client.get().getResponse(link.getUrl().toString());
                 OffsetDateTime prevUpdatedAt = link.getUpdatedAt();
-                LinkDto updatedLink = linkRepository.setUpdatedAtAndLastCheckAtById(
-                    link.getId(),
-                    clientResponse.updateAt(),
-                    OffsetDateTime.now()
-                );
+                link.setUpdatedAt(clientResponse.updateAt());
+                link.setLastCheckAt(OffsetDateTime.now());
+                LinkDto updatedLink = linkRepository.save(link);
                 if (prevUpdatedAt == null || prevUpdatedAt.isBefore(updatedLink.getUpdatedAt())) {
                     updates.put(
                         updatedLink,
