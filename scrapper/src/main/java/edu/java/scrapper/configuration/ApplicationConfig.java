@@ -2,6 +2,7 @@ package edu.java.scrapper.configuration;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
+import java.util.Set;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -11,7 +12,9 @@ public record ApplicationConfig(
     @NotNull
     Scheduler scheduler,
     ClientBaseUrl clientBaseUrl,
-    AccessType databaseAccessType
+    AccessType databaseAccessType,
+    RetryPolicy retryPolicy
+
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration checkDelay) {
     }
@@ -21,5 +24,18 @@ public record ApplicationConfig(
 
     public enum AccessType {
         JDBC, JPA
+    }
+
+    public record RetryPolicy(
+        Type type,
+        Duration delay,
+        int maxAttempts,
+        Set<Integer> retryOnCodes
+
+    ) {
+    }
+
+    public enum Type {
+        NONE, CONSTANT, LINEAR, EXPONENTIAL
     }
 }

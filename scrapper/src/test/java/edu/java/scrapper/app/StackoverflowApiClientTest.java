@@ -18,7 +18,7 @@ public class StackoverflowApiClientTest {
             new ClientResponse(OffsetDateTime.ofInstant(Instant.ofEpochSecond(1708873503), ZoneOffset.UTC));
         String baseUrl = "http://localhost:8080";
         String path = "/questions/78056447?site=stackoverflow";
-        StackoverflowApiClient client = new StackoverflowApiClient(baseUrl);
+        StackoverflowApiClient client = new StackoverflowApiClient(baseUrl, null);
         WireMock.stubFor(
             WireMock.get(path)
                 .willReturn(
@@ -31,18 +31,20 @@ public class StackoverflowApiClientTest {
 
     @Test
     void testCanRespondMethodReturnTrueWhenValidLinkGiven() {
+        String baseUrl = "http://localhost:8080";
         String link = "https://stackoverflow.com/questions/78056447?site=stackoverflow";
         boolean expected = true;
-        StackoverflowApiClient client = new StackoverflowApiClient();
+        StackoverflowApiClient client = new StackoverflowApiClient(baseUrl, null);
         boolean actual = client.canAccess(link);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void testCanRespondMethodReturnFalseWhenInvalidLinkGiven() {
+        String baseUrl = "http://localhost:8080";
         String link = "https://yandex.ru";
         boolean expected = false;
-        StackoverflowApiClient client = new StackoverflowApiClient();
+        StackoverflowApiClient client = new StackoverflowApiClient(baseUrl, null);
         boolean actual = client.canAccess(link);
         assertThat(actual).isEqualTo(expected);
     }

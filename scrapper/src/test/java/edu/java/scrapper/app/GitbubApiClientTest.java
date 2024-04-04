@@ -16,7 +16,7 @@ public class GitbubApiClientTest {
         String baseUrl = "http://localhost:8080";
         String responsePath = "/repos/sanyarnd/java-course-2023-backend-template";
         String requestPath = "/sanyarnd/java-course-2023-backend-template";
-        GithubApiClient client = new GithubApiClient(baseUrl);
+        GithubApiClient client = new GithubApiClient(baseUrl, null);
         WireMock.stubFor(
             WireMock.get(responsePath)
                 .willReturn(
@@ -31,7 +31,7 @@ public class GitbubApiClientTest {
     void testCanRespondMethodReturnTrueWhenValidLinkGiven() {
         String link = "https://github.com/sanyarnd/java-course-2023-backend-template";
         boolean expected = true;
-        GithubApiClient client = new GithubApiClient();
+        GithubApiClient client = new GithubApiClient(null, null);
         boolean actual = client.canAccess(link);
         assertThat(actual).isEqualTo(expected);
     }
@@ -40,7 +40,7 @@ public class GitbubApiClientTest {
     void testCanRespondMethodReturnFalseWhenInvalidLinkGiven() {
         String link = "https://yandex.ru";
         boolean expected = false;
-        GithubApiClient client = new GithubApiClient();
+        GithubApiClient client = new GithubApiClient(null, null);
         boolean actual = client.canAccess(link);
         assertThat(actual).isEqualTo(expected);
     }

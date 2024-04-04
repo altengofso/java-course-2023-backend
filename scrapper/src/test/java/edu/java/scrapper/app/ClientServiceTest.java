@@ -5,6 +5,7 @@ import edu.java.scrapper.ScrapperApplication;
 import edu.java.scrapper.client.apiclient.ApiClient;
 import edu.java.scrapper.client.apiclient.GithubApiClient;
 import edu.java.scrapper.client.apiclient.StackoverflowApiClient;
+import edu.java.scrapper.configuration.ApplicationConfig;
 import edu.java.scrapper.service.ClientService;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,11 +24,11 @@ public class ClientServiceTest extends IntegrationEnvironment {
         return Stream.of(
             Arguments.of(
                 "https://github.com/sanyarnd/java-course-2023-backend-template",
-                new GithubApiClient()
+                new GithubApiClient(null, null)
             ),
             Arguments.of(
                 "https://stackoverflow.com/questions/78056447?site=stackoverflow",
-                new StackoverflowApiClient()
+                new StackoverflowApiClient(null, null)
             )
         );
     }

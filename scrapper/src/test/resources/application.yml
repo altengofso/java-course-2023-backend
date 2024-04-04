@@ -9,6 +9,12 @@ app:
     stackoverflow-url: https://api.stackexchange.com
     bot-url: http://localhost:8090
 
+  retry-policy:
+    type: constant
+    delay: 5s
+    max-attempts: 3
+    retry-on-codes: 408, 425, 429, 500, 502, 503, 504
+
   database-access-type: jpa
 
 spring:

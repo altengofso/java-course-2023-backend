@@ -1,13 +1,19 @@
 app:
   scheduler:
     enable: true
-    interval: 3600000
+    interval: 10000
     check-delay: 3600
 
   client-base-url:
     github-url: https://api.github.com
     stackoverflow-url: https://api.stackexchange.com
     bot-url: http://localhost:8090
+
+  retry-policy:
+    type: exponential
+    delay: 5s
+    max-attempts: 3
+    retry-on-codes: 408, 425, 429, 500, 502, 503, 504
 
   database-access-type: jpa
 
