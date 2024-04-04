@@ -42,9 +42,8 @@ public class UpdatesController {
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Void> sendUpdates(@RequestBody LinkUpdate linkUpdate) {
-//        log.info("Sending update {}", linkUpdate);
-//        updatesService.sendUpdates(linkUpdate);
-//        return ResponseEntity.ok().build();
-        return ResponseEntity.internalServerError().build();
+        log.info("Sending update {}", linkUpdate);
+        updatesService.sendUpdates(linkUpdate);
+        return ResponseEntity.ok().build();
     }
 }
