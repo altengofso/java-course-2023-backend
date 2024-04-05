@@ -13,8 +13,8 @@ public record ApplicationConfig(
     Scheduler scheduler,
     ClientBaseUrl clientBaseUrl,
     AccessType databaseAccessType,
-    RetryPolicy retryPolicy
-
+    RetryPolicy retryPolicy,
+    RateLimit rateLimit
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration checkDelay) {
     }
@@ -37,5 +37,14 @@ public record ApplicationConfig(
 
     public enum Type {
         NONE, CONSTANT, LINEAR, EXPONENTIAL
+    }
+
+    public record RateLimit(
+        boolean enabled,
+        int capacity,
+        int refillRate,
+        Duration refillInterval,
+        int initialTokens
+    ) {
     }
 }

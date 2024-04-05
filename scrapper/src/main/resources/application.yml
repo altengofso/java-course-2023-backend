@@ -15,6 +15,13 @@ app:
     max-attempts: 3
     retry-on-codes: 408, 425, 429, 500, 502, 503, 504
 
+  rate-limit:
+    enabled: true
+    capacity: 100
+    refill-rate: 25
+    refill-interval: 1m
+    initial-tokens: 100
+
   database-access-type: jpa
 
 spring:
