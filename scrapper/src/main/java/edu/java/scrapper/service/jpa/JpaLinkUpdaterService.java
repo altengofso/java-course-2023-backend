@@ -8,13 +8,11 @@ import edu.java.scrapper.repository.dto.SubscriptionDto;
 import edu.java.scrapper.repository.link.jpa.JpaLinkRepository;
 import edu.java.scrapper.repository.subscription.jpa.JpaSubscriptionRepository;
 import edu.java.scrapper.service.LinkUpdaterService;
-import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 
 @RequiredArgsConstructor
 public class JpaLinkUpdaterService implements LinkUpdaterService {
