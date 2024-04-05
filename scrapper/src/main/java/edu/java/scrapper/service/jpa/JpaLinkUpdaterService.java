@@ -24,12 +24,11 @@ public class JpaLinkUpdaterService implements LinkUpdaterService {
     private final List<ApiClient> apiClients;
     private final BotApiClient botApiClient;
 
-    @SneakyThrows @Override
+    @Override
     public void update(OffsetDateTime lastCheckAt) {
-        botApiClient.sendUpdates(new LinkUpdate(1, new URI("http://yandex.ru"), "111", List.of(1L)));
-//        var links = linkRepository.findAllByLastCheckAtIsLessThanOrLastCheckAtIsNull(lastCheckAt);
-//        Map<LinkDto, List<Long>> updates = checkUpdates(links);
-//        sendUpdates(updates);
+        var links = linkRepository.findAllByLastCheckAtIsLessThanOrLastCheckAtIsNull(lastCheckAt);
+        Map<LinkDto, List<Long>> updates = checkUpdates(links);
+        sendUpdates(updates);
     }
 
     private Map<LinkDto, List<Long>> checkUpdates(List<LinkDto> links) {
