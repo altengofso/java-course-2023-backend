@@ -18,11 +18,10 @@ public class RateLimiterInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         Bucket bucket = rateLimiter.getBucket(request.getRemoteAddr());
         ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
-        if (probe.isConsumed()) {
-            return true;
-        } else {
+        if (!probe.isConsumed()) {
             long secondsWaitForRefill = TimeUnit.SECONDS.convert(probe.getNanosToWaitForRefill(), TimeUnit.NANOSECONDS);
             throw new TooManyRequestsException("Wait %d seconds for refill".formatted(secondsWaitForRefill));
         }
+        return true;
     }
 }
