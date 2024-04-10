@@ -54,6 +54,14 @@ public class LinkController {
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ApiErrorResponse.class)
             )
+        ),
+        @ApiResponse(
+            responseCode = "429",
+            description = "Слишком много запросов",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = ApiErrorResponse.class)
+            )
         )
     })
     @GetMapping("/links")
@@ -94,6 +102,14 @@ public class LinkController {
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ApiErrorResponse.class)
             )
+        ),
+        @ApiResponse(
+            responseCode = "429",
+            description = "Слишком много запросов",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = ApiErrorResponse.class)
+            )
         )
     })
     @PostMapping("/links")
@@ -125,6 +141,14 @@ public class LinkController {
         @ApiResponse(
             responseCode = "404",
             description = "Объект не найден",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = ApiErrorResponse.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "429",
+            description = "Слишком много запросов",
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ApiErrorResponse.class)

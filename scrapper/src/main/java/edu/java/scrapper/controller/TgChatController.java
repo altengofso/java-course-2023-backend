@@ -41,6 +41,14 @@ public class TgChatController {
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ApiErrorResponse.class)
             )
+        ),
+        @ApiResponse(
+            responseCode = "429",
+            description = "Слишком много запросов",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = ApiErrorResponse.class)
+            )
         )
     })
     @GetMapping(
@@ -76,6 +84,14 @@ public class TgChatController {
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ApiErrorResponse.class)
             )
+        ),
+        @ApiResponse(
+            responseCode = "429",
+            description = "Слишком много запросов",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = ApiErrorResponse.class)
+            )
         )
     })
     @PostMapping(
@@ -107,6 +123,14 @@ public class TgChatController {
         @ApiResponse(
             responseCode = "404",
             description = "Чат не существует",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = ApiErrorResponse.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "429",
+            description = "Слишком много запросов",
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = ApiErrorResponse.class)

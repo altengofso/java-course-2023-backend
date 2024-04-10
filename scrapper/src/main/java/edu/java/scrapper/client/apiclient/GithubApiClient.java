@@ -1,21 +1,17 @@
 package edu.java.scrapper.client.apiclient;
 
+import edu.java.scrapper.client.botclient.filter.RetryFilter;
 import edu.java.scrapper.client.dto.ClientResponse;
 import edu.java.scrapper.client.dto.GithubDTO;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GithubApiClient extends AbstractApiClient {
-    private static final String DEFAULT_URL = "https://api.github.com";
     private static final Pattern EXTRACT_PATTERN = Pattern.compile("https?://.*/(.+)/(.+).*");
     private static final String URL_PREFIX = "https://github.com";
 
-    public GithubApiClient() {
-        super(DEFAULT_URL, URL_PREFIX, EXTRACT_PATTERN);
-    }
-
-    public GithubApiClient(String baseUrl) {
-        super(baseUrl, DEFAULT_URL, URL_PREFIX, EXTRACT_PATTERN);
+    public GithubApiClient(String baseUrl, RetryFilter retryFilter) {
+        super(baseUrl, URL_PREFIX, EXTRACT_PATTERN, retryFilter);
     }
 
     @Override
