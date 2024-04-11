@@ -1,7 +1,6 @@
 package edu.java.scrapper.configuration;
 
 import edu.java.scrapper.client.apiclient.ApiClient;
-import edu.java.scrapper.client.botclient.BotApiClient;
 import edu.java.scrapper.repository.chat.jpa.JpaChatRepository;
 import edu.java.scrapper.repository.link.jpa.JpaLinkRepository;
 import edu.java.scrapper.repository.subscription.jpa.JpaSubscriptionRepository;
@@ -11,6 +10,7 @@ import edu.java.scrapper.service.TgChatService;
 import edu.java.scrapper.service.jpa.JpaLinkService;
 import edu.java.scrapper.service.jpa.JpaLinkUpdaterService;
 import edu.java.scrapper.service.jpa.JpaTgChatService;
+import edu.java.scrapper.service.sender.LinkUpdateSenderService;
 import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -38,8 +38,8 @@ public class JpaAccessConfiguration {
         JpaLinkRepository linkRepository,
         JpaSubscriptionRepository subscriptionRepository,
         List<ApiClient> apiClients,
-        BotApiClient botApiClient
+        LinkUpdateSenderService linkUpdateSenderService
     ) {
-        return new JpaLinkUpdaterService(linkRepository, subscriptionRepository, apiClients, botApiClient);
+        return new JpaLinkUpdaterService(linkRepository, subscriptionRepository, apiClients, linkUpdateSenderService);
     }
 }
