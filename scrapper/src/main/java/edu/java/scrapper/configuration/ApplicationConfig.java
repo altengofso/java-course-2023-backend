@@ -14,7 +14,9 @@ public record ApplicationConfig(
     ClientBaseUrl clientBaseUrl,
     AccessType databaseAccessType,
     RetryPolicy retryPolicy,
-    RateLimit rateLimit
+    RateLimit rateLimit,
+    Topic updatesTopic,
+    boolean useQueue
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration checkDelay) {
     }
@@ -46,5 +48,8 @@ public record ApplicationConfig(
         Duration refillInterval,
         int initialTokens
     ) {
+    }
+
+    public record Topic(String name, int replicas, int partitions) {
     }
 }
