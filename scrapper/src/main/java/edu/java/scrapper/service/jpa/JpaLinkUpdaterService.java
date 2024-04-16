@@ -1,13 +1,13 @@
 package edu.java.scrapper.service.jpa;
 
 import edu.java.scrapper.client.apiclient.ApiClient;
-import edu.java.scrapper.client.botclient.BotApiClient;
 import edu.java.scrapper.client.botclient.models.LinkUpdate;
 import edu.java.scrapper.repository.dto.LinkDto;
 import edu.java.scrapper.repository.dto.SubscriptionDto;
 import edu.java.scrapper.repository.link.jpa.JpaLinkRepository;
 import edu.java.scrapper.repository.subscription.jpa.JpaSubscriptionRepository;
 import edu.java.scrapper.service.LinkUpdaterService;
+import edu.java.scrapper.service.sender.LinkUpdateSenderService;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +20,7 @@ public class JpaLinkUpdaterService implements LinkUpdaterService {
     private final JpaLinkRepository linkRepository;
     private final JpaSubscriptionRepository subscriptionRepository;
     private final List<ApiClient> apiClients;
-    private final BotApiClient botApiClient;
+    private final LinkUpdateSenderService linkUpdateSenderService;
 
     @Override
     public void update(OffsetDateTime lastCheckAt) {
@@ -65,7 +65,7 @@ public class JpaLinkUpdaterService implements LinkUpdaterService {
                 link.getUrl().toString(),
                 link.getUpdatedAt().toLocalDateTime().toString()
             );
-            botApiClient.sendUpdates(new LinkUpdate(link.getId(), link.getUrl(), description, tgChatIds));
+            linkUpdateSenderService.send(new LinkUpdate(link.getId(), link.getUrl(), description, tgChatIds));
         }
     }
 }

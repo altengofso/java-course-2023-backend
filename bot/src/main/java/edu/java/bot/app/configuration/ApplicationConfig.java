@@ -9,8 +9,13 @@ import org.springframework.validation.annotation.Validated;
 public record ApplicationConfig(
     @NotEmpty
     String telegramToken,
-    ClientBaseUrl clientBaseUrl
+    ClientBaseUrl clientBaseUrl,
+    Topic updatesTopic,
+    Topic deadLetterQueueTopic
 ) {
     public record ClientBaseUrl(String scrapperUrl) {
+    }
+
+    public record Topic(String name, int replicas, int partitions) {
     }
 }

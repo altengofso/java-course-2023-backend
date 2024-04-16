@@ -1,7 +1,6 @@
 package edu.java.scrapper.configuration;
 
 import edu.java.scrapper.client.apiclient.ApiClient;
-import edu.java.scrapper.client.botclient.BotApiClient;
 import edu.java.scrapper.repository.chat.jdbc.JdbcChatRepository;
 import edu.java.scrapper.repository.link.jdbc.JdbcLinkRepository;
 import edu.java.scrapper.repository.subscription.jdbc.JdbcSubscriptionRepository;
@@ -11,6 +10,7 @@ import edu.java.scrapper.service.TgChatService;
 import edu.java.scrapper.service.jdbc.JdbcLinkService;
 import edu.java.scrapper.service.jdbc.JdbcLinkUpdaterService;
 import edu.java.scrapper.service.jdbc.JdbcTgChatService;
+import edu.java.scrapper.service.sender.LinkUpdateSenderService;
 import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -38,8 +38,8 @@ public class JdbcAccessConfiguration {
         JdbcLinkRepository linkRepository,
         JdbcSubscriptionRepository subscriptionRepository,
         List<ApiClient> apiClients,
-        BotApiClient botApiClient
+        LinkUpdateSenderService linkUpdateSenderService
     ) {
-        return new JdbcLinkUpdaterService(linkRepository, subscriptionRepository, apiClients, botApiClient);
+        return new JdbcLinkUpdaterService(linkRepository, subscriptionRepository, apiClients, linkUpdateSenderService);
     }
 }

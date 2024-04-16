@@ -24,6 +24,12 @@ app:
 
   database-access-type: jpa
 
+  updates-topic:
+    name: updates
+    replicas: 1
+    partitions: 1
+  use-queue: true
+
 spring:
   application:
     name: scrapper
@@ -37,6 +43,16 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      bootstrap-servers: localhost:9092
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring:
+          json:
+            value.default.type: edu.java.scrapper.client.botclient.models.LinkUpdate
+            trusted.packages: edu.java.scrapper.client.botclient.models
 
 springdoc:
   swagger-ui:
@@ -45,6 +61,30 @@ springdoc:
 
 server:
   port: 8080
+
+management:
+  endpoint:
+    health:
+      enabled: true
+    info:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  server:
+    port: 8000
+  endpoints:
+    web:
+      base-path: ""
+      exposure:
+        include:
+          - info
+          - health
+          - prometheus
+      path-mapping:
+        prometheus: /metrics
 
 logging:
   config: classpath:log4j2-plain.xml
