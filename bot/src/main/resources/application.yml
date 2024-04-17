@@ -1,5 +1,13 @@
 app:
   telegram-token: ${bot_token}
+  dead-letter-queue-topic:
+    name: updates_dlq
+    replicas: 1
+    partitions: 1
+  updates-topic:
+    name: updates
+    replicas: 1
+    partitions: 1
 
   client-base-url:
     scrapper-url: http://localhost:8080
@@ -9,6 +17,23 @@ spring:
     name: bot
   jackson:
     time-zone: UTC
+  kafka:
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted.packages: edu.java.bot.api.models
+            use.type.headers: false
+            value.default.type: edu.java.bot.api.models.LinkUpdate
+      bootstrap-servers: localhost:9092
+      group-id: main
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      bootstrap-servers: localhost:9092
 
 springdoc:
   swagger-ui:
