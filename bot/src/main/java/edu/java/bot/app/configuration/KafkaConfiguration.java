@@ -1,5 +1,6 @@
 package edu.java.bot.app.configuration;
 
+import edu.java.bot.api.models.LinkUpdate;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +9,7 @@ import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.listener.CommonErrorHandler;
 
 @Configuration
 public class KafkaConfiguration {
@@ -17,12 +19,14 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(
-        ConsumerFactory<String, String> consumerFactory
+    public ConcurrentKafkaListenerContainerFactory<String, LinkUpdate> kafkaListenerContainerFactory(
+        ConsumerFactory<String, LinkUpdate> consumerFactory,
+        CommonErrorHandler commonErrorHandler
     ) {
-        ConcurrentKafkaListenerContainerFactory<String, String> factory =
+        ConcurrentKafkaListenerContainerFactory<String, LinkUpdate> factory =
             new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
+        factory.setCommonErrorHandler(commonErrorHandler);
         factory.setConcurrency(1);
         return factory;
     }
