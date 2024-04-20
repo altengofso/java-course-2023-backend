@@ -7,13 +7,17 @@ on:
       - .github/workflows/bot.yml
       - bot/**
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/link-tracker-bot
+
 jobs:
   build:
     runs-on: ubuntu-latest
     name: Build
     permissions:
       packages: write
-      pull-requests: write 
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v4
@@ -25,6 +29,20 @@ jobs:
 
       - name: maven build
         run: mvn -pl bot -am package
+
+      - name: build bot image
+        run: docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} -f bot.Dockerfile .
+        working-directory: ${{ github.workspace }}/bot
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: push image
+        run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - id: jacoco
         uses: madrapps/jacoco-report@v1.6.1
